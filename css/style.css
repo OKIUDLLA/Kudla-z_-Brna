@@ -225,21 +225,60 @@ section { padding:6rem 0; position:relative; }
    ============================================ */
 .video-section { background:var(--black); padding:6rem 0; }
 .video-featured { margin-bottom:3rem; }
-.video-featured .video-wrapper, .video-card .video-wrapper {
+
+/* Thumbnail-based video cards */
+.video-thumb {
   position:relative; padding-bottom:56.25%; height:0; background:var(--dark-3); overflow:hidden;
+  cursor:pointer; border-radius:8px;
 }
-.video-featured .video-wrapper iframe, .video-card .video-wrapper iframe {
-  position:absolute; inset:0; width:100%; height:100%; border:none;
+.video-thumb img {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  transition:transform 0.5s var(--ease), filter 0.5s var(--ease);
 }
+.video-thumb:hover img { transform:scale(1.05); filter:brightness(0.7); }
+.video-thumb iframe {
+  position:absolute; inset:0; width:100%; height:100%; border:none; border-radius:8px;
+}
+.video-play-btn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(1);
+  background:none; border:none; cursor:pointer; z-index:2; padding:0;
+  transition:transform 0.3s var(--ease), opacity 0.3s var(--ease);
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+.video-play-btn svg { width:68px; height:48px; }
+.video-thumb:hover .video-play-btn { transform:translate(-50%,-50%) scale(1.15); }
+.video-badge {
+  position:absolute; top:0.75rem; right:0.75rem; z-index:2;
+  background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  color:var(--grey-lighter); font-size:0.75rem; font-weight:500;
+  padding:0.3rem 0.7rem; border-radius:20px;
+  display:flex; align-items:center; gap:0.35rem;
+}
+.video-thumb-info {
+  position:absolute; bottom:0; left:0; right:0; z-index:2;
+  padding:3rem 1.5rem 1.2rem;
+  background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+}
+.video-thumb-info h3 {
+  font-family:var(--font-display); font-size:1.5rem; font-weight:700; margin-bottom:0.3rem;
+}
+.video-thumb-info .video-views {
+  color:var(--grey-light); font-size:0.85rem; display:flex; align-items:center; gap:0.4rem;
+}
+.video-thumb--featured { border-radius:12px; margin-bottom:2rem; }
+.video-thumb--featured .video-play-btn svg { width:80px; height:56px; }
+
+/* Video grid */
 .video-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
 .video-card {
   background:var(--dark-2); overflow:hidden; border:1px solid rgba(255,255,255,0.03);
-  transition:all 0.4s var(--ease);
+  border-radius:12px; transition:all 0.4s var(--ease);
 }
-.video-card:hover { border-color:rgba(255,255,255,0.08); transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.5); }
-.video-card-info { padding:1.2rem 1.5rem; }
-.video-card-info h3 { font-family:var(--font-body); font-size:1rem; font-weight:600; margin-bottom:0.2rem; }
-.video-card-info p { color:var(--grey); font-size:0.85rem; }
+.video-card .video-thumb { border-radius:12px 12px 0 0; }
+.video-card:hover { border-color:var(--accent-bright); transform:translateY(-6px); box-shadow:0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--accent-bright); }
+.video-card-info { padding:1rem 1.2rem 1.2rem; }
+.video-card-info h3 { font-family:var(--font-body); font-size:0.95rem; font-weight:600; margin-bottom:0.2rem; }
+.video-card-info p { color:var(--grey); font-size:0.8rem; }
 
 /* ============================================
    CONCERTS
@@ -423,6 +462,8 @@ section { padding:6rem 0; position:relative; }
   section{padding:4rem 0}
   .container{padding:0 1.25rem}
   .video-grid{grid-template-columns:1fr}
+  .video-thumb--featured .video-play-btn svg{width:60px;height:42px}
+  .video-thumb-info h3{font-size:1.1rem}
   .shop-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:2px}
   .hero-content{padding-bottom:12vh}

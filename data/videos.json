@@ -1,99 +1,81 @@
 {
   "featured": {
-    "youtubeId": "IH6zUqXQ1_o",
-    "title": "Kudla z Brna - Holka kosmická",
-    "description": "Videoklip — 5,1 tis. zhlédnutí"
+    "youtubeId": "5MSitnxgA0k",
+    "title": "Kudla s Kapelou v Krabici — Live in Studio",
+    "description": "6,2 tis. zhlédnutí · nejsledovanější video"
   },
   "videos": [
     {
-      "youtubeId": "HbkQOGuQ3jY",
-      "title": "Adios Panama",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "SAoBre2BOIQ",
-      "title": "Obřanská ztráta paměti",
-      "description": "Videoklip"
+      "youtubeId": "IH6zUqXQ1_o",
+      "title": "Holka kosmická",
+      "description": "Videoklip",
+      "views": "5,1 tis."
     },
     {
       "youtubeId": "AjnV29uMdVE",
       "title": "Stopy lidí",
-      "description": "Videoklip"
+      "description": "Videoklip",
+      "views": "3,9 tis."
     },
     {
       "youtubeId": "8wNLUDMnqC8",
       "title": "Na slaných polštářích",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "gxBE_jCYdlM",
-      "title": "Pravda",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "yLSM-ii5F6A",
-      "title": "Měsíc",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "TKxtIV_9vJg",
-      "title": "Disco nikdy víc",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "25qe54jZTKw",
-      "title": "Den osudových změn",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "b1Icdbm97-Y",
-      "title": "Stopy lidí",
-      "description": "Hudební video"
-    },
-    {
-      "youtubeId": "1oiFgyxtauY",
-      "title": "Galerie",
-      "description": "Videoklip"
-    },
-    {
-      "youtubeId": "z6fsXEaK0Io",
-      "title": "Kauboj ze Žebětína",
-      "description": "Z alba Adios Panama"
-    },
-    {
-      "youtubeId": "5MSitnxgA0k",
-      "title": "Live in Studio",
-      "description": "Kudla s Kapelou v Krabici — koncert"
-    },
-    {
-      "youtubeId": "KFnUWAApFng",
-      "title": "Koncert pro Ukrajinu",
-      "description": "Semilasso, 24.3.2022"
-    },
-    {
-      "youtubeId": "kR-jZ3xZ-ac",
-      "title": "Baďa Diaby - Prolínám",
-      "description": "Lyric Video"
+      "description": "Videoklip",
+      "views": "2,5 tis."
     },
     {
       "youtubeId": "4vfMLkrj-RQ",
       "title": "Hudba kam budete chtít",
-      "description": "Promo video"
+      "description": "Promo video",
+      "views": "1,8 tis."
     },
     {
-      "youtubeId": "fMZJXZnYKXs",
-      "title": "Křest CD",
-      "description": "Brno Metro, 24.1. 2020"
+      "youtubeId": "b1Icdbm97-Y",
+      "title": "Stopy lidí",
+      "description": "Hudební video",
+      "views": "1,8 tis."
     },
     {
-      "youtubeId": "YLBs8zu-pDo",
-      "title": "Velikonoční",
-      "description": "Ukázka z připravované desky"
+      "youtubeId": "KFnUWAApFng",
+      "title": "Koncert pro Ukrajinu",
+      "description": "Semilasso, 24.3.2022",
+      "views": "1,5 tis."
     },
     {
-      "youtubeId": "7edYl7yO42k",
-      "title": "Human Footprints",
-      "description": "Trailer"
+      "youtubeId": "SAoBre2BOIQ",
+      "title": "Obřanská ztráta paměti",
+      "description": "Videoklip",
+      "views": "1,2 tis."
+    },
+    {
+      "youtubeId": "gxBE_jCYdlM",
+      "title": "Pravda",
+      "description": "Videoklip",
+      "views": "928"
+    },
+    {
+      "youtubeId": "HbkQOGuQ3jY",
+      "title": "Adios Panama",
+      "description": "Videoklip",
+      "views": "693"
+    },
+    {
+      "youtubeId": "yLSM-ii5F6A",
+      "title": "Měsíc",
+      "description": "Videoklip",
+      "views": "621"
+    },
+    {
+      "youtubeId": "1oiFgyxtauY",
+      "title": "Galerie",
+      "description": "Videoklip",
+      "views": "570"
+    },
+    {
+      "youtubeId": "kR-jZ3xZ-ac",
+      "title": "Baďa Diaby — Prolínám",
+      "description": "Lyric Video",
+      "views": "552"
     }
   ]
 }

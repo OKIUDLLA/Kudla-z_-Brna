@@ -229,7 +229,15 @@ async function loadConcertsFull() {
   }
 }
 
-// VIDEOS
+// VIDEOS — interactive thumbnail cards with lazy iframe load
+function videoThumb(id) {
+  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+}
+function playVideo(btn) {
+  const wrapper = btn.closest('.video-thumb');
+  const id = wrapper.dataset.ytId;
+  wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Video" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
+}
 async function loadVideos() {
   const featuredEl = document.getElementById('video-featured');
   const gridEl = document.getElementById('video-grid');
@@ -239,14 +247,17 @@ async function loadVideos() {
   if (!data) return;
 
   if (featuredEl && data.featured && data.featured.youtubeId) {
+    const f = data.featured;
     featuredEl.innerHTML = `
-      <div class="video-wrapper">
-        <iframe src="https://www.youtube.com/embed/${data.featured.youtubeId}" title="${data.featured.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>`;
-  } else if (featuredEl) {
-    featuredEl.innerHTML = `
-      <div class="video-wrapper" style="display:flex;align-items:center;justify-content:center;padding-bottom:0;height:300px;">
-        <p style="color:var(--grey);"><i class="fas fa-video" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>Video bude brzy k dispozici</p>
+      <div class="video-thumb video-thumb--featured" data-yt-id="${f.youtubeId}">
+        <img src="${videoThumb(f.youtubeId)}" alt="${f.title}" loading="lazy">
+        <button class="video-play-btn" onclick="playVideo(this)" aria-label="Přehrát video">
+          <svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
+        </button>
+        <div class="video-thumb-info">
+          <h3>${f.title}</h3>
+          <span class="video-views"><i class="fas fa-eye"></i> ${f.description}</span>
+        </div>
       </div>`;
   }
 
@@ -255,8 +266,12 @@ async function loadVideos() {
     if (validVideos.length > 0) {
       gridEl.innerHTML = validVideos.map(v => `
         <div class="video-card">
-          <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/${v.youtubeId}" title="${v.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          <div class="video-thumb" data-yt-id="${v.youtubeId}">
+            <img src="${videoThumb(v.youtubeId)}" alt="${v.title}" loading="lazy">
+            <button class="video-play-btn" onclick="playVideo(this)" aria-label="Přehrát video">
+              <svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
+            </button>
+            ${v.views ? `<span class="video-badge"><i class="fas fa-eye"></i> ${v.views}</span>` : ''}
           </div>
           <div class="video-card-info">
             <h3>${v.title}</h3>
