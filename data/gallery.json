@@ -1,0 +1,7 @@
+{
+  "photos": [
+    { "src": "img/gallery/photo1.jpg", "alt": "Koncert" },
+    { "src": "img/gallery/photo2.jpg", "alt": "Na pódiu" },
+    { "src": "img/gallery/photo3.jpg", "alt": "Festival" }
+  ]
+}

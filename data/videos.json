@@ -1,0 +1,24 @@
+{
+  "featured": {
+    "youtubeId": "",
+    "title": "Hlavní video",
+    "description": "Koncertní záznam"
+  },
+  "videos": [
+    {
+      "youtubeId": "",
+      "title": "Holka kosmická",
+      "description": "Videoklip"
+    },
+    {
+      "youtubeId": "",
+      "title": "Stopy lidí",
+      "description": "Videoklip"
+    },
+    {
+      "youtubeId": "",
+      "title": "Adios Panama",
+      "description": "Videoklip z alba"
+    }
+  ]
+}

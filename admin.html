@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Správa webu — Kudla z Brna</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header scrolled">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="img/logo.svg" alt="Kudla z Brna">
+      </a>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <span style="color:var(--accent-bright);font-size:0.8rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">
+          <i class="fas fa-lock"></i> Správa webu
+        </span>
+        <a href="index.html" class="btn btn-ghost btn-sm">
+          <i class="fas fa-external-link-alt"></i> Web
+        </a>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm" style="display:none;">
+          <i class="fas fa-sign-out-alt"></i> Odhlásit
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-page">
+    <!-- LOGIN -->
+    <div id="loginScreen" class="admin-login">
+      <h1>Správa webu</h1>
+      <p>Zadejte heslo pro přístup ke správě obsahu.</p>
+      <div class="admin-form">
+        <input type="password" id="adminPassword" placeholder="Heslo..." style="text-align:center;">
+        <button id="loginBtn" class="admin-btn" style="width:100%;justify-content:center;margin-top:0.75rem;">
+          <i class="fas fa-lock-open"></i> Přihlásit se
+        </button>
+        <p id="loginError" class="admin-message error" style="display:none;margin-top:1rem;">Nesprávné heslo.</p>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="admin-container" style="display:none;">
+      <div id="adminMessage"></div>
+
+      <!-- TABS -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="concerts"><i class="fas fa-calendar-alt"></i> Koncerty</button>
+        <button class="admin-tab" data-tab="videos"><i class="fas fa-video"></i> Videa</button>
+        <button class="admin-tab" data-tab="gallery"><i class="fas fa-images"></i> Foto</button>
+        <button class="admin-tab" data-tab="shop"><i class="fas fa-shopping-bag"></i> Shop</button>
+        <button class="admin-tab" data-tab="bio"><i class="fas fa-user"></i> Bio</button>
+        <button class="admin-tab" data-tab="export"><i class="fas fa-download"></i> Export</button>
+      </div>
+
+      <!-- TAB: CONCERTS -->
+      <div id="tab-concerts" class="admin-tab-content">
+        <div class="admin-section">
+          <h2><i class="fas fa-plus-circle"></i> Přidat koncert</h2>
+          <div class="admin-form" id="concertForm">
+            <label>Datum</label>
+            <input type="date" id="concertDate">
+            <label>Název akce</label>
+            <input type="text" id="concertTitle" placeholder="Název koncertu...">
+            <label>Místo konání</label>
+            <input type="text" id="concertVenue" placeholder="Klub, město...">
+            <label>URL vstupenek (nepovinné)</label>
+            <input type="url" id="concertTicket" placeholder="https://...">
+            <label>Poznámka (nepovinné)</label>
+            <input type="text" id="concertNote" placeholder="Např. support act...">
+            <button class="admin-btn" onclick="addConcert()"><i class="fas fa-plus"></i> Přidat koncert</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-calendar-check"></i> Nadcházející koncerty</h2>
+          <div id="upcomingList"></div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-history"></i> Odehrané koncerty</h2>
+          <div id="pastList"></div>
+        </div>
+      </div>
+
+      <!-- TAB: VIDEOS -->
+      <div id="tab-videos" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-star"></i> Hlavní video</h2>
+          <div class="admin-form">
+            <label>YouTube ID</label>
+            <input type="text" id="featuredVideoId" placeholder="dQw4w9WgXcQ">
+            <p style="color:var(--grey);font-size:0.8rem;margin-top:0.3rem;">Z URL https://youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong> zkopírujte jen zvýrazněnou část.</p>
+            <label>Název</label>
+            <input type="text" id="featuredVideoTitle" placeholder="Název videa...">
+            <label>Popis</label>
+            <input type="text" id="featuredVideoDesc" placeholder="Koncertní záznam...">
+            <button class="admin-btn" onclick="saveFeaturedVideo()"><i class="fas fa-save"></i> Uložit hlavní video</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-plus-circle"></i> Přidat video</h2>
+          <div class="admin-form">
+            <label>YouTube ID</label>
+            <input type="text" id="newVideoId" placeholder="dQw4w9WgXcQ">
+            <label>Název</label>
+            <input type="text" id="newVideoTitle" placeholder="Název videa...">
+            <label>Popis</label>
+            <input type="text" id="newVideoDesc" placeholder="Videoklip / Koncertní záznam...">
+            <button class="admin-btn" onclick="addVideo()"><i class="fas fa-plus"></i> Přidat video</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-list"></i> Videa v galerii</h2>
+          <div id="videosList"></div>
+        </div>
+      </div>
+
+      <!-- TAB: GALLERY -->
+      <div id="tab-gallery" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-images"></i> Fotogalerie</h2>
+          <div class="admin-message" style="background:rgba(56,182,255,0.08);border:1px solid rgba(56,182,255,0.2);color:var(--grey-lighter);">
+            <strong><i class="fas fa-info-circle"></i> Jak přidat fotky:</strong><br>
+            1. Pojmenujte fotky jednoduše (např. koncert-brno-2026.jpg)<br>
+            2. Nahrajte je do složky <code>img/gallery/</code> v GitHub repozitáři<br>
+            3. Přidejte záznam níže s cestou k fotce
+          </div>
+          <div class="admin-form">
+            <label>Cesta k fotce</label>
+            <input type="text" id="photoSrc" placeholder="img/gallery/koncert-brno.jpg">
+            <label>Popis fotky</label>
+            <input type="text" id="photoAlt" placeholder="Koncert v Brně 2026">
+            <button class="admin-btn" onclick="addPhoto()"><i class="fas fa-plus"></i> Přidat fotku</button>
+          </div>
+          <div id="photosList" class="preview-grid" style="margin-top:1.5rem;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: SHOP -->
+      <div id="tab-shop" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-plus-circle"></i> Přidat album</h2>
+          <div class="admin-form">
+            <label>Název alba</label>
+            <input type="text" id="albumTitle" placeholder="Název alba...">
+            <label>Cena (Kč)</label>
+            <input type="number" id="albumPrice" value="200">
+            <label>Poštovné (Kč)</label>
+            <input type="number" id="albumShipping" value="40">
+            <label>Obrázek obálky</label>
+            <input type="text" id="albumImage" placeholder="img/album-nazev.jpg">
+            <label>E-mail pro objednávky</label>
+            <input type="email" id="albumEmail" value="m.kudlicka@seznam.cz">
+            <label>Popis</label>
+            <input type="text" id="albumDesc" placeholder="Debutové album...">
+            <button class="admin-btn" onclick="addAlbum()"><i class="fas fa-plus"></i> Přidat album</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-compact-disc"></i> Alba v shopu</h2>
+          <div id="albumsList"></div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-truck"></i> Informace o dopravě</h2>
+          <div class="admin-form">
+            <textarea id="shippingNote" rows="3"></textarea>
+            <button class="admin-btn" onclick="saveShippingNote()"><i class="fas fa-save"></i> Uložit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: BIO -->
+      <div id="tab-bio" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-user"></i> Biografie</h2>
+          <div class="admin-form">
+            <label>Nadpis (headline)</label>
+            <input type="text" id="bioHeadline">
+            <label>Krátký popis (na úvodní stránce)</label>
+            <textarea id="bioShort" rows="4"></textarea>
+            <label>Rozšířený popis</label>
+            <textarea id="bioLong" rows="4"></textarea>
+            <label>Tagy (oddělené čárkou)</label>
+            <input type="text" id="bioTags" placeholder="Písničkář, Textař, Looper...">
+            <button class="admin-btn" onclick="saveBio()"><i class="fas fa-save"></i> Uložit biografii</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: EXPORT -->
+      <div id="tab-export" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-download"></i> Stažení dat</h2>
+          <p style="color:var(--grey-light);margin-bottom:1.5rem;">
+            Stáhněte aktuální datové soubory a nahrajte je na GitHub do složky <code>data/</code> pro aktualizaci webu.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <button class="admin-btn secondary" onclick="downloadJSON('concerts')"><i class="fas fa-calendar-alt"></i> concerts.json</button>
+            <button class="admin-btn secondary" onclick="downloadJSON('videos')"><i class="fas fa-video"></i> videos.json</button>
+            <button class="admin-btn secondary" onclick="downloadJSON('gallery')"><i class="fas fa-images"></i> gallery.json</button>
+            <button class="admin-btn secondary" onclick="downloadJSON('shop')"><i class="fas fa-shopping-bag"></i> shop.json</button>
+            <button class="admin-btn secondary" onclick="downloadJSON('bio')"><i class="fas fa-user"></i> bio.json</button>
+            <button class="admin-btn" onclick="downloadAllJSON()" style="grid-column:1/-1;justify-content:center;"><i class="fas fa-file-archive"></i> Stáhnout vše</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fab fa-github"></i> Přímá aktualizace přes GitHub</h2>
+          <p style="color:var(--grey-light);margin-bottom:1rem;">
+            Zadejte GitHub Personal Access Token pro přímé nahrání změn na web. Token vytvoříte na
+            <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent-bright);">github.com/settings/tokens</a>
+            s oprávněním <code>repo</code>.
+          </p>
+          <div class="admin-form">
+            <label>GitHub Token</label>
+            <input type="password" id="githubToken" placeholder="ghp_...">
+            <label>Repozitář</label>
+            <input type="text" id="githubRepo" value="OKIUDLLA/Kudla-z-Brna">
+            <label>Cesta k datové složce</label>
+            <input type="text" id="githubPath" value="kudlazbrna-web/data">
+            <button class="admin-btn" onclick="pushToGitHub()">
+              <i class="fas fa-upload"></i> Nahrát změny na GitHub
+            </button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-question-circle"></i> Návod</h2>
+          <div style="color:var(--grey-light);line-height:1.8;">
+            <p><strong style="color:var(--white);">Jak to funguje?</strong></p>
+            <p>1. Upravte obsah v záložkách výše (koncerty, videa, fotky, shop, bio)</p>
+            <p>2. Změny se ukládají do prohlížeče (zůstanou i po zavření)</p>
+            <p>3. Pro publikování na web: buď stáhněte JSON soubory a nahrajte na GitHub, nebo použijte přímou aktualizaci s tokenem</p>
+            <p>4. Po nahrání na GitHub se web automaticky aktualizuje (obvykle do 1-2 minut)</p>
+            <p style="margin-top:1rem;"><strong style="color:var(--white);">Jak přidat fotky?</strong></p>
+            <p>Fotky je potřeba nahrát přímo na GitHub do složky <code>kudlazbrna-web/img/gallery/</code>. Pojmenujte je jednoduše bez diakritiky a mezer.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+  // ============================================
+  // ADMIN PANEL — Kudla z Brna
+  // ============================================
+
+  // Data storage
+  let concertsData = { upcoming: [], past: [] };
+  let videosData = { featured: { youtubeId: '', title: '', description: '' }, videos: [] };
+  let galleryData = { photos: [] };
+  let shopData = { albums: [], shippingNote: '' };
+  let bioData = { headline: '', shortBio: '', longBio: '', tags: [] };
+  let siteData = {};
+
+  // ---- AUTH ----
+  async function checkAuth() {
+    const stored = sessionStorage.getItem('kudla_admin');
+    if (stored === 'true') { showAdmin(); return; }
+    document.getElementById('loginScreen').style.display = 'block';
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const pwd = document.getElementById('adminPassword').value;
+    try {
+      const res = await fetch('data/site.json');
+      siteData = await res.json();
+      if (pwd === siteData.adminPassword) {
+        sessionStorage.setItem('kudla_admin', 'true');
+        showAdmin();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    } catch(e) {
+      // Fallback
+      if (pwd === 'kudla2026') { sessionStorage.setItem('kudla_admin','true'); showAdmin(); }
+      else { document.getElementById('loginError').style.display = 'block'; }
+    }
+  });
+
+  document.getElementById('adminPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('kudla_admin');
+    location.reload();
+  });
+
+  function showAdmin() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'inline-flex';
+    loadAllData();
+  }
+
+  // ---- TABS ----
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).style.display = 'block';
+    });
+  });
+
+  // ---- DATA LOADING ----
+  async function loadAllData() {
+    try {
+      const [concerts, videos, gallery, shop, bio] = await Promise.all([
+        fetch('data/concerts.json').then(r => r.json()).catch(() => ({ upcoming: [], past: [] })),
+        fetch('data/videos.json').then(r => r.json()).catch(() => ({ featured: {youtubeId:'',title:'',description:''}, videos: [] })),
+        fetch('data/gallery.json').then(r => r.json()).catch(() => ({ photos: [] })),
+        fetch('data/shop.json').then(r => r.json()).catch(() => ({ albums: [], shippingNote: '' })),
+        fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[] }))
+      ]);
+
+      // Check localStorage for unsaved changes
+      concertsData = JSON.parse(localStorage.getItem('kudla_concerts')) || concerts;
+      videosData = JSON.parse(localStorage.getItem('kudla_videos')) || videos;
+      galleryData = JSON.parse(localStorage.getItem('kudla_gallery')) || gallery;
+      shopData = JSON.parse(localStorage.getItem('kudla_shop')) || shop;
+      bioData = JSON.parse(localStorage.getItem('kudla_bio')) || bio;
+
+      renderAll();
+    } catch(e) {
+      showMessage('Chyba při načítání dat: ' + e.message, 'error');
+    }
+  }
+
+  function saveLocal(key, data) {
+    localStorage.setItem('kudla_' + key, JSON.stringify(data));
+    showMessage('Změny uloženy lokálně. Pro publikování na web použijte záložku Export.', 'success');
+  }
+
+  function showMessage(text, type) {
+    const el = document.getElementById('adminMessage');
+    el.innerHTML = `<div class="admin-message ${type}">${text}</div>`;
+    setTimeout(() => el.innerHTML = '', 5000);
+  }
+
+  // ---- RENDER ----
+  function renderAll() {
+    renderConcerts();
+    renderVideos();
+    renderGallery();
+    renderShop();
+    renderBio();
+  }
+
+  function renderConcerts() {
+    const upEl = document.getElementById('upcomingList');
+    const pastEl = document.getElementById('pastList');
+
+    upEl.innerHTML = concertsData.upcoming.length ? concertsData.upcoming.map((c, i) => `
+      <div class="admin-item">
+        <div>
+          <h4>${c.title}</h4>
+          <span class="item-meta">${c.date} · ${c.venue}</span>
+        </div>
+        <div class="admin-item-actions">
+          <button onclick="removeConcert('upcoming',${i})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné nadcházející koncerty.</p>';
+
+    pastEl.innerHTML = concertsData.past.length ? concertsData.past.map((c, i) => `
+      <div class="admin-item">
+        <div>
+          <h4>${c.title}</h4>
+          <span class="item-meta">${c.date} · ${c.venue}</span>
+        </div>
+        <div class="admin-item-actions">
+          <button class="delete" onclick="removeConcert('past',${i})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné odehrané koncerty.</p>';
+  }
+
+  function renderVideos() {
+    // Featured
+    if (videosData.featured) {
+      document.getElementById('featuredVideoId').value = videosData.featured.youtubeId || '';
+      document.getElementById('featuredVideoTitle').value = videosData.featured.title || '';
+      document.getElementById('featuredVideoDesc').value = videosData.featured.description || '';
+    }
+
+    const listEl = document.getElementById('videosList');
+    listEl.innerHTML = videosData.videos.length ? videosData.videos.map((v, i) => `
+      <div class="admin-item">
+        <div>
+          <h4>${v.title}</h4>
+          <span class="item-meta">ID: ${v.youtubeId || '(prázdné)'} · ${v.description}</span>
+        </div>
+        <div class="admin-item-actions">
+          <button class="delete" onclick="removeVideo(${i})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná videa.</p>';
+  }
+
+  function renderGallery() {
+    const el = document.getElementById('photosList');
+    el.innerHTML = galleryData.photos.length ? galleryData.photos.map((p, i) => `
+      <div class="admin-item" style="display:block;padding:0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="item-meta">${p.src}</span>
+          <button class="delete" onclick="removePhoto(${i})" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.5rem;cursor:pointer;font-size:0.75rem;"><i class="fas fa-trash"></i></button>
+        </div>
+        <span style="color:var(--grey);font-size:0.8rem;">${p.alt}</span>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné fotky v galerii.</p>';
+  }
+
+  function renderShop() {
+    const el = document.getElementById('albumsList');
+    el.innerHTML = shopData.albums.length ? shopData.albums.map((a, i) => `
+      <div class="admin-item">
+        <div>
+          <h4>${a.title}</h4>
+          <span class="item-meta">${a.price} Kč + ${a.shipping} Kč poštovné</span>
+        </div>
+        <div class="admin-item-actions">
+          <button class="delete" onclick="removeAlbum(${i})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná alba v shopu.</p>';
+
+    document.getElementById('shippingNote').value = shopData.shippingNote || '';
+  }
+
+  function renderBio() {
+    document.getElementById('bioHeadline').value = bioData.headline || '';
+    document.getElementById('bioShort').value = bioData.shortBio || '';
+    document.getElementById('bioLong').value = bioData.longBio || '';
+    document.getElementById('bioTags').value = (bioData.tags || []).join(', ');
+  }
+
+  // ---- ACTIONS ----
+  function addConcert() {
+    const date = document.getElementById('concertDate').value;
+    const title = document.getElementById('concertTitle').value;
+    const venue = document.getElementById('concertVenue').value;
+    if (!date || !title || !venue) { showMessage('Vyplňte datum, název a místo.', 'error'); return; }
+
+    const concert = {
+      date, title, venue,
+      ticketUrl: document.getElementById('concertTicket').value,
+      note: document.getElementById('concertNote').value
+    };
+
+    // Auto-sort: future = upcoming, past = past
+    if (new Date(date) >= new Date()) {
+      concertsData.upcoming.push(concert);
+      concertsData.upcoming.sort((a,b) => new Date(a.date) - new Date(b.date));
+    } else {
+      concertsData.past.push(concert);
+      concertsData.past.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+
+    saveLocal('concerts', concertsData);
+    renderConcerts();
+    // Clear form
+    ['concertDate','concertTitle','concertVenue','concertTicket','concertNote'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function removeConcert(type, index) {
+    if (!confirm('Opravdu smazat tento koncert?')) return;
+    concertsData[type].splice(index, 1);
+    saveLocal('concerts', concertsData);
+    renderConcerts();
+  }
+
+  function saveFeaturedVideo() {
+    videosData.featured = {
+      youtubeId: document.getElementById('featuredVideoId').value,
+      title: document.getElementById('featuredVideoTitle').value,
+      description: document.getElementById('featuredVideoDesc').value
+    };
+    saveLocal('videos', videosData);
+  }
+
+  function addVideo() {
+    const id = document.getElementById('newVideoId').value;
+    const title = document.getElementById('newVideoTitle').value;
+    if (!title) { showMessage('Zadejte název videa.', 'error'); return; }
+    videosData.videos.push({
+      youtubeId: id,
+      title: title,
+      description: document.getElementById('newVideoDesc').value
+    });
+    saveLocal('videos', videosData);
+    renderVideos();
+    ['newVideoId','newVideoTitle','newVideoDesc'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function removeVideo(index) {
+    if (!confirm('Opravdu smazat toto video?')) return;
+    videosData.videos.splice(index, 1);
+    saveLocal('videos', videosData);
+    renderVideos();
+  }
+
+  function addPhoto() {
+    const src = document.getElementById('photoSrc').value;
+    const alt = document.getElementById('photoAlt').value;
+    if (!src) { showMessage('Zadejte cestu k fotce.', 'error'); return; }
+    galleryData.photos.push({ src, alt: alt || 'Fotka' });
+    saveLocal('gallery', galleryData);
+    renderGallery();
+    document.getElementById('photoSrc').value = '';
+    document.getElementById('photoAlt').value = '';
+  }
+
+  function removePhoto(index) {
+    if (!confirm('Odebrat tuto fotku z galerie?')) return;
+    galleryData.photos.splice(index, 1);
+    saveLocal('gallery', galleryData);
+    renderGallery();
+  }
+
+  function addAlbum() {
+    const title = document.getElementById('albumTitle').value;
+    if (!title) { showMessage('Zadejte název alba.', 'error'); return; }
+    shopData.albums.push({
+      title,
+      price: parseInt(document.getElementById('albumPrice').value) || 200,
+      shipping: parseInt(document.getElementById('albumShipping').value) || 40,
+      image: document.getElementById('albumImage').value,
+      orderEmail: document.getElementById('albumEmail').value || 'm.kudlicka@seznam.cz',
+      description: document.getElementById('albumDesc').value
+    });
+    saveLocal('shop', shopData);
+    renderShop();
+    ['albumTitle','albumImage','albumDesc'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function removeAlbum(index) {
+    if (!confirm('Opravdu odebrat toto album?')) return;
+    shopData.albums.splice(index, 1);
+    saveLocal('shop', shopData);
+    renderShop();
+  }
+
+  function saveShippingNote() {
+    shopData.shippingNote = document.getElementById('shippingNote').value;
+    saveLocal('shop', shopData);
+  }
+
+  function saveBio() {
+    bioData = {
+      headline: document.getElementById('bioHeadline').value,
+      shortBio: document.getElementById('bioShort').value,
+      longBio: document.getElementById('bioLong').value,
+      tags: document.getElementById('bioTags').value.split(',').map(t => t.trim()).filter(Boolean)
+    };
+    saveLocal('bio', bioData);
+  }
+
+  // ---- EXPORT ----
+  function downloadJSON(name) {
+    const dataMap = { concerts: concertsData, videos: videosData, gallery: galleryData, shop: shopData, bio: bioData };
+    const blob = new Blob([JSON.stringify(dataMap[name], null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function downloadAllJSON() {
+    ['concerts','videos','gallery','shop','bio'].forEach(name => {
+      setTimeout(() => downloadJSON(name), 200 * ['concerts','videos','gallery','shop','bio'].indexOf(name));
+    });
+  }
+
+  // ---- GITHUB PUSH ----
+  async function pushToGitHub() {
+    const token = document.getElementById('githubToken').value;
+    const repo = document.getElementById('githubRepo').value;
+    const basePath = document.getElementById('githubPath').value;
+
+    if (!token || !repo) { showMessage('Zadejte GitHub token a repozitář.', 'error'); return; }
+
+    const files = {
+      'concerts.json': concertsData,
+      'videos.json': videosData,
+      'gallery.json': galleryData,
+      'shop.json': shopData,
+      'bio.json': bioData
+    };
+
+    showMessage('Nahrávám na GitHub...', 'success');
+
+    for (const [filename, data] of Object.entries(files)) {
+      try {
+        const path = basePath + '/' + filename;
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+        // Get current file SHA if exists
+        let sha = '';
+        try {
+          const existing = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+            headers: { 'Authorization': `token ${token}` }
+          });
+          if (existing.ok) {
+            const fileData = await existing.json();
+            sha = fileData.sha;
+          }
+        } catch(e) {}
+
+        const body = {
+          message: `Aktualizace ${filename} z admin panelu`,
+          content: content,
+          branch: 'main'
+        };
+        if (sha) body.sha = sha;
+
+        const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) throw new Error(`${filename}: ${res.status}`);
+      } catch(e) {
+        showMessage(`Chyba při nahrávání ${filename}: ${e.message}`, 'error');
+        return;
+      }
+    }
+
+    showMessage('Všechny soubory nahrány na GitHub! Web se aktualizuje do 1-2 minut.', 'success');
+    // Clear localStorage after successful push
+    ['concerts','videos','gallery','shop','bio'].forEach(k => localStorage.removeItem('kudla_' + k));
+  }
+
+  // ---- INIT ----
+  checkAuth();
+  </script>
+</body>
+</html>

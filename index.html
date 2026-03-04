@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kudla z Brna — Písničkář, textař, moravský hlas</title>
+  <meta name="description" content="Martin 'Kudla' Kudlička — brněnský písničkář, textař, moravský hlas rádia BEAT. Sólo s looperem — jedna osoba zní jako bigbeatové trio.">
+  <meta property="og:title" content="Kudla z Brna — Písničkář, textař, moravský hlas">
+  <meta property="og:description" content="Brněnský písničkář a textař. Moravský hlas rádia BEAT. Sólo s looperem.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kudlazbrna.cz">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo" style="visibility:hidden;">
+        <img src="img/logo.svg" alt="Kudla z Brna">
+      </a>
+
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Úvod</a></li>
+          <li><a href="biografie.html">Biografie</a></li>
+          <li><a href="media.html">Media</a></li>
+          <li><a href="koncerty.html">Koncerty</a></li>
+          <li><a href="foto.html">Foto</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-social">
+        <a href="https://www.facebook.com/kudlazbrna" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.youtube.com/@kudlazbrna" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://bandzone.cz/kudlazbrna" target="_blank" rel="noopener" aria-label="Bandzone"><i class="fas fa-music"></i></a>
+      </div>
+
+      <button class="menu-toggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="nav-overlay"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img src="img/logo.svg" alt="Kudla z Brna" class="hero-logo">
+      <p class="hero-tagline">
+        <span>Písničkář</span> &middot; Textař &middot; <span>Moravský hlas</span>
+      </p>
+      <div class="hero-cta">
+        <a href="koncerty.html" class="btn btn-primary">
+          <i class="fas fa-calendar-alt"></i> Koncerty
+        </a>
+        <a href="media.html" class="btn btn-ghost">
+          <i class="fas fa-play"></i> Poslechnout
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP -->
+  <section class="about-strip">
+    <div class="container">
+      <div class="about-image reveal">
+        <img src="img/kudla-portrait.jpg" alt="Kudla z Brna — Martin Kudlička">
+      </div>
+      <div class="about-text reveal">
+        <span class="section-label">O mně</span>
+        <h2 class="section-title">Jedna kytara.<br>Jeden looper.<br>Zvuk <em>celé kapely.</em></h2>
+        <p>
+          Martin „Kudla" Kudlička je brněnský písničkář, který na pódiu tvoří něco, co byste nečekali od jednoho člověka. S looperem v ruce staví doprovod živě — vrstvením kytary, hlasu a rytmu vytváří zvuk bigbeatového tria.
+        </p>
+        <p>
+          Zakládající člen kapel Lidopop a Zadáci. Autor textů pro Progres 2, B Side Band a Škaredou holku. Moravský hlas rádia BEAT a moderátor hudebních festivalů.
+        </p>
+        <div class="about-tags">
+          <span class="tag">Písničkář</span>
+          <span class="tag">Textař</span>
+          <span class="tag">Looper</span>
+          <span class="tag">Rádio BEAT</span>
+          <span class="tag">Lidopop</span>
+          <span class="tag">Zadáci</span>
+        </div>
+        <a href="biografie.html" class="btn btn-ghost btn-sm">
+          Celá biografie <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- VIDEO TEASER -->
+  <section class="video-section" id="video-section">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Audio / Video</span>
+        <h2 class="section-title">Poslouchejte <em>& sledujte</em></h2>
+      </div>
+      <div id="video-featured"></div>
+      <div id="video-grid" class="video-grid reveal"></div>
+      <div class="text-center mt-2 reveal">
+        <a href="media.html" class="btn btn-ghost btn-sm">Všechna videa <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONCERTS TEASER -->
+  <section class="concerts-section" id="concerts-section">
+    <div class="container">
+      <div class="reveal">
+        <span class="section-label">Naživo</span>
+        <h2 class="section-title">Nejbližší <em>koncerty</em></h2>
+      </div>
+      <div id="concerts-list" class="concerts-list reveal"></div>
+      <div class="text-center mt-2 reveal">
+        <a href="koncerty.html" class="btn btn-ghost btn-sm">Všechny koncerty <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">
+        <img src="img/logo.svg" alt="Kudla z Brna">
+      </a>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/kudlazbrna" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.youtube.com/@kudlazbrna" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://bandzone.cz/kudlazbrna" target="_blank" rel="noopener" aria-label="Bandzone"><i class="fas fa-music"></i></a>
+      </div>
+      <p class="footer-copy">&copy; 2026 Kudla z Brna</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

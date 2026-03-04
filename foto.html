@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foto — Kudla z Brna</title>
+  <meta name="description" content="Fotogalerie Kudly z Brna — černobílé koncertní fotografie.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="img/logo.svg" alt="Kudla z Brna">
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Úvod</a></li>
+          <li><a href="biografie.html">Biografie</a></li>
+          <li><a href="media.html">Media</a></li>
+          <li><a href="koncerty.html">Koncerty</a></li>
+          <li><a href="foto.html">Foto</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+      <div class="header-social">
+        <a href="https://www.facebook.com/kudlazbrna" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.youtube.com/@kudlazbrna" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://bandzone.cz/kudlazbrna" target="_blank" rel="noopener" aria-label="Bandzone"><i class="fas fa-music"></i></a>
+      </div>
+      <button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="nav-overlay"></div>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>Foto</h1>
+      <p class="subtitle">Černobílé koncertní fotografie</p>
+    </div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="container">
+      <div id="gallery-grid" class="gallery-grid reveal"></div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox">
+    <button class="lightbox-close" aria-label="Zavřít">&times;</button>
+    <button class="lightbox-nav lightbox-prev" aria-label="Předchozí">&#10094;</button>
+    <img src="" alt="Fotografie — zvětšení">
+    <button class="lightbox-nav lightbox-next" aria-label="Další">&#10095;</button>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">
+        <img src="img/logo.svg" alt="Kudla z Brna">
+      </a>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/kudlazbrna" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.youtube.com/@kudlazbrna" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://bandzone.cz/kudlazbrna" target="_blank" rel="noopener" aria-label="Bandzone"><i class="fas fa-music"></i></a>
+      </div>
+      <p class="footer-copy">&copy; 2026 Kudla z Brna</p>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>

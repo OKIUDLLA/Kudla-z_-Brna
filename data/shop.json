@@ -1,0 +1,21 @@
+{
+  "albums": [
+    {
+      "title": "Adios Panama",
+      "price": 200,
+      "shipping": 40,
+      "image": "img/album-adios-panama.jpg",
+      "orderEmail": "m.kudlicka@seznam.cz",
+      "description": "Debutové album"
+    },
+    {
+      "title": "Kudla v krabici",
+      "price": 200,
+      "shipping": 40,
+      "image": "img/album-kudla-v-krabici.jpg",
+      "orderEmail": "m.kudlicka@seznam.cz",
+      "description": "Druhé album"
+    }
+  ],
+  "shippingNote": "CD zasíláme jako doporučený dopis Českou poštou. Po objednání vás budeme kontaktovat s platebními údaji."
+}
