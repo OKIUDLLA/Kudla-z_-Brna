@@ -233,10 +233,60 @@ async function loadConcertsFull() {
 function videoThumb(id) {
   return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 }
+function videoThumbMax(id) {
+  return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+}
 function playVideo(btn) {
   const wrapper = btn.closest('.video-thumb');
   const id = wrapper.dataset.ytId;
   wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Video" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
+}
+
+// HOMEPAGE — bento layout with top 5 videos
+async function loadVideoTeaser() {
+  const bento = document.getElementById('video-bento');
+  if (!bento) return;
+
+  const data = await loadJSON('data/videos.json');
+  if (!data) return;
+
+  // Collect all: featured + first 4 from grid (top 5 total)
+  const all = [];
+  if (data.featured && data.featured.youtubeId) all.push(data.featured);
+  if (data.videos) data.videos.filter(v => v.youtubeId).forEach(v => all.push(v));
+  const top5 = all.slice(0, 5);
+  if (top5.length === 0) return;
+
+  const big = top5[0];
+  const small = top5.slice(1);
+
+  const playBtn = `<button class="video-play-btn" onclick="playVideo(this)" aria-label="Přehrát"><svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg></button>`;
+
+  bento.innerHTML = `
+    <div class="bento-hero">
+      <div class="video-thumb bento-main" data-yt-id="${big.youtubeId}">
+        <img src="${videoThumbMax(big.youtubeId)}" alt="${big.title}" loading="lazy"
+             onerror="this.src='${videoThumb(big.youtubeId)}'">
+        ${playBtn}
+        <div class="bento-main-info">
+          <span class="bento-rank">#1</span>
+          <h3>${big.title}</h3>
+          <span class="video-views"><i class="fas fa-eye"></i> ${big.description || big.views || ''}</span>
+        </div>
+      </div>
+    </div>
+    <div class="bento-side">
+      ${small.map((v, i) => `
+        <div class="video-thumb bento-item" data-yt-id="${v.youtubeId}">
+          <img src="${videoThumb(v.youtubeId)}" alt="${v.title}" loading="lazy">
+          ${playBtn}
+          <div class="bento-item-info">
+            <span class="bento-rank">#${i + 2}</span>
+            <h3>${v.title}</h3>
+            ${v.views ? `<span class="video-views"><i class="fas fa-eye"></i> ${v.views}</span>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`;
 }
 async function loadVideos() {
   const featuredEl = document.getElementById('video-featured');
@@ -337,6 +387,7 @@ async function loadShop() {
 function initDataLoading() {
   loadConcerts();
   loadConcertsFull();
+  loadVideoTeaser();
   loadVideos();
   loadGallery();
   loadShop();
