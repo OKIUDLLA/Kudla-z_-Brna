@@ -137,15 +137,20 @@ section { padding:6rem 0; position:relative; contain:layout style; }
 .hero {
   position:relative; min-height:100vh; min-height:100dvh;
   display:flex; align-items:center; justify-content:center; overflow:hidden;
+  background:var(--black);
 }
 .hero-bg {
-  position:absolute; inset:0;
-  background:url('../img/hero-bg.jpg') center 30% / cover no-repeat, linear-gradient(135deg, #0a0a0a 0%, #0d1b2a 50%, #0a0a0a 100%);
+  position:absolute; top:0; right:0; bottom:0; width:55%;
+  background:url('../img/hero-bg.jpg') center 20% / cover no-repeat;
   filter:grayscale(100%); will-change:transform;
+  mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,1) 100%);
 }
 .hero-overlay {
   position:absolute; inset:0;
-  background:linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.1) 40%, rgba(5,5,5,0.5) 70%, rgba(5,5,5,1) 100%);
+  background:
+    linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.7) 85%, rgba(5,5,5,1) 100%),
+    linear-gradient(to right, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.2) 40%, transparent 60%);
 }
 .hero::before {
   content:''; position:absolute; inset:0; z-index:1; opacity:0.04; pointer-events:none;
@@ -665,6 +670,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   .shop-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:2px}
   .hero-content{padding-bottom:6vh}
+  .hero-bg{width:100%;opacity:0.3;mask-image:none;-webkit-mask-image:none}
   .next-concert-card{grid-template-columns:1fr;text-align:center;gap:1rem;padding:1.5rem 1.25rem}
   .next-concert-date{flex-direction:row;gap:0.6rem;padding:0.75rem 1.2rem;justify-content:center}
   .next-day{font-size:2.2rem}
