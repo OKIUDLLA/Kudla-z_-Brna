@@ -171,6 +171,9 @@ section { padding:6rem 0; position:relative; contain:layout style; }
 .hero-tagline span { color:var(--white); font-weight:500; }
 .hero-cta {
   display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
+}
+.hero-cta .btn {
+  min-width:200px; justify-content:center;
   opacity:0; animation:heroFadeUp 1s var(--ease-out) 1s forwards;
 }
 .hero-scroll {
