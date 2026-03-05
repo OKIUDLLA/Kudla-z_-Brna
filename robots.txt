@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /archiv.html
+
+Sitemap: https://kudlazbrna.netlify.app/sitemap.xml

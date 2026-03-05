@@ -273,6 +273,9 @@ async function loadConcertsFull() {
     upcomingContainer.innerHTML = html || '<p style="color:var(--grey);">Žádné nadcházející koncerty.</p>';
   }
 
+  // Inject structured data for SEO
+  injectConcertJsonLd(data);
+
   if (pastContainer && data.past) {
     const byYear = {};
     data.past.forEach(c => {
@@ -642,6 +645,28 @@ function closeConcertDetail() {
 
 function concertModalEsc(e) {
   if (e.key === 'Escape') closeConcertDetail();
+}
+
+// STRUCTURED DATA — inject JSON-LD for concerts
+function injectConcertJsonLd(data) {
+  if (!data || !data.upcoming || !document.getElementById('concerts-upcoming')) return;
+  const events = data.upcoming.slice(0, 10).map(c => ({
+    "@context": "https://schema.org",
+    "@type": "MusicEvent",
+    "name": c.title + " — Kudla z Brna",
+    "startDate": c.date + (c.time ? 'T' + c.time + ':00' : ''),
+    "location": {
+      "@type": "Place",
+      "name": c.venue || c.city,
+      "address": { "@type": "PostalAddress", "addressLocality": c.city || '' }
+    },
+    "performer": { "@type": "MusicGroup", "name": "Kudla z Brna" },
+    "url": "https://kudlazbrna.netlify.app/koncerty.html"
+  }));
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(events);
+  document.head.appendChild(script);
 }
 
 // Initialize data loading on page load

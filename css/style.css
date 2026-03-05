@@ -14,7 +14,7 @@
   --dark-4: #1a1a1a;
   --dark-5: #222;
   --grey-dark: #333;
-  --grey: #666;
+  --grey: #888;
   --grey-light: #999;
   --grey-lighter: #bbb;
   --white: #f0f0f0;
@@ -622,7 +622,8 @@ section { padding:6rem 0; position:relative; }
   .next-day{font-size:2.8rem}
   .next-concert-title{font-size:1.3rem}
   .gallery-grid{grid-template-columns:repeat(2,1fr)}
-  .footer-inner{flex-direction:column;gap:1.5rem;text-align:center}
+  .footer-inner{grid-template-columns:1fr;justify-items:center;gap:1rem;text-align:center}
+  .footer-copy{justify-self:center}
 }
 @media(max-width:600px){
   section{padding:4rem 0}
@@ -718,6 +719,10 @@ a.concert-detail-row--link:hover .concert-detail-action-icon { color:var(--accen
 .concert-detail-link.ticket:hover { background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.3); }
 .concert-detail-link.event { color:#a855f7; background:rgba(168,85,247,0.08); border-color:rgba(168,85,247,0.15); }
 .concert-detail-link.event:hover { background:rgba(168,85,247,0.15); border-color:rgba(168,85,247,0.3); }
+
+/* Screen-reader only & skip link */
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.skip-link:focus { position:fixed; top:0; left:50%; transform:translateX(-50%); z-index:9999; width:auto; height:auto; padding:0.8rem 1.5rem; margin:0; clip:auto; background:var(--accent); color:var(--white-pure); font-size:0.85rem; font-weight:600; text-decoration:none; }
 
 .text-center{text-align:center}
 .text-accent{color:var(--accent-bright)}

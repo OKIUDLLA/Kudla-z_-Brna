@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a href="#about" class="skip-link sr-only">Přeskočit na obsah</a>
 
   <!-- HEADER -->
   <header class="site-header">
@@ -58,6 +59,7 @@
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
+      <h1 class="sr-only">Kudla z Brna — písničkář, textař, moravský hlas</h1>
       <img src="img/logo.svg" alt="Kudla z Brna" class="hero-logo">
       <p class="hero-tagline">
         <span>Písničkář</span> &middot; Textař &middot; <span>Moravský hlas</span>
@@ -155,5 +157,26 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Kudla z Brna",
+    "alternateName": "Martin Kudla Kudlicka",
+    "url": "https://kudlazbrna.netlify.app",
+    "image": "https://kudlazbrna.netlify.app/img/kudla-portrait.jpg",
+    "genre": ["Folk", "Rock", "Singer-Songwriter"],
+    "description": "Brnensky pisnickar a textar. Moravsky hlas radia BEAT. Solo s looperem.",
+    "sameAs": [
+      "https://www.facebook.com/kudla.cz/",
+      "https://www.youtube.com/@kudla4079",
+      "https://bandzone.cz/kudla"
+    ],
+    "member": {
+      "@type": "Person",
+      "name": "Martin Kudlicka"
+    }
+  }
+  </script>
 </body>
 </html>
