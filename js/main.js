@@ -54,12 +54,20 @@ function initMobileNav() {
   if (!toggle || !nav) return;
   toggle.setAttribute('aria-expanded', 'false');
   toggle.setAttribute('aria-controls', 'main-nav');
-  const close = () => { toggle.classList.remove('active'); nav.classList.remove('open'); overlay && overlay.classList.remove('active'); document.body.style.overflow = ''; toggle.setAttribute('aria-expanded', 'false'); };
-  const open = () => { toggle.classList.add('active'); nav.classList.add('open'); overlay && overlay.classList.add('active'); document.body.style.overflow = 'hidden'; toggle.setAttribute('aria-expanded', 'true'); };
+  const close = () => { toggle.classList.remove('active'); nav.classList.remove('open'); overlay && overlay.classList.remove('active'); document.body.style.overflow = ''; toggle.setAttribute('aria-expanded', 'false'); toggle.focus(); };
+  const open = () => { toggle.classList.add('active'); nav.classList.add('open'); overlay && overlay.classList.add('active'); document.body.style.overflow = 'hidden'; toggle.setAttribute('aria-expanded', 'true'); const firstLink = nav.querySelector('a'); if (firstLink) firstLink.focus(); };
   toggle.addEventListener('click', () => nav.classList.contains('open') ? close() : open());
   overlay && overlay.addEventListener('click', close);
   nav.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
-  document.addEventListener('keydown', e => e.key === 'Escape' && close());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && nav.classList.contains('open')) { close(); return; }
+    if (e.key === 'Tab' && nav.classList.contains('open')) {
+      const focusable = [toggle, ...nav.querySelectorAll('a')];
+      const first = focusable[0]; const last = focusable[focusable.length - 1];
+      if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+      else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+    }
+  });
 }
 
 function initParallax() {
@@ -485,10 +493,16 @@ async function loadGallery() {
     return;
   }
 
-  grid.innerHTML = data.photos.map((p, i) => `
+  grid.innerHTML = data.photos.map((p, i) => {
+    const webpSrc = p.src.replace(/\.jpg$/, '.webp');
+    return `
     <div class="gallery-item" role="button" tabindex="0" aria-label="Zobrazit fotografii ${i + 1}">
-      <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" onerror="this.parentElement.style.display='none'">
-    </div>`).join('');
+      <picture>
+        <source type="image/webp" srcset="${webpSrc}">
+        <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" onerror="this.closest('.gallery-item').style.display='none'">
+      </picture>
+    </div>`;
+  }).join('');
 
   // Re-init lightbox after dynamic load
   initLightbox();
