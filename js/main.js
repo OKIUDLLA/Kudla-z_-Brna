@@ -180,8 +180,9 @@ async function loadConcerts() {
   const cd = countdownText(next.date);
   const d = new Date(next.date);
 
+  const nextHasDetail = next.description || next.venueUrl || next.eventUrl;
   let html = `
-    <div class="next-concert-card reveal">
+    <div class="next-concert-card reveal${nextHasDetail ? ' clickable' : ''}" ${nextHasDetail ? `onclick="openConcertDetail('${next.id}')"` : ''} style="cursor:${nextHasDetail ? 'pointer' : 'default'}">
       <div class="next-concert-date">
         <span class="next-day">${fd.day}</span>
         <span class="next-month">${MONTHS_FULL[d.getMonth()]}</span>
@@ -196,7 +197,8 @@ async function loadConcerts() {
         <p class="next-concert-venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(next)}</p>
         ${next.note ? `<p class="next-concert-note">${next.note}</p>` : ''}
         <div class="next-concert-actions">
-          ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
+          ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
+          ${nextHasDetail ? `<span class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openConcertDetail('${next.id}')"><i class="fas fa-info-circle"></i> Detail</span>` : ''}
         </div>
       </div>
     </div>`;
@@ -206,8 +208,9 @@ async function loadConcerts() {
     html += '<div class="upcoming-list reveal">';
     rest.forEach(c => {
       const rfd = formatDate(c.date);
+      const hasDetail = c.description || c.venueUrl || c.eventUrl;
       html += `
-        <div class="concert-item">
+        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${c.id}')"` : ''}>
           <div class="concert-date">
             <span class="day">${rfd.day}</span>
             <span class="month-year">${rfd.monthYear}</span>
@@ -217,7 +220,7 @@ async function loadConcerts() {
             <p class="venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}</p>
           </div>
           <div class="concert-link">
-            ${c.ticketUrl ? `<a href="${c.ticketUrl}" class="btn btn-primary btn-sm" target="_blank">Vstupenky</a>` : ''}
+            ${hasDetail ? '<span class="concert-detail-btn"><i class="fas fa-info-circle"></i></span>' : ''}
           </div>
         </div>`;
     });
