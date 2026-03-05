@@ -93,13 +93,14 @@
     <!-- LOGIN -->
     <div id="loginScreen" class="admin-login">
       <h1>Správa webu</h1>
-      <p>Zadejte heslo pro přístup ke správě obsahu.</p>
+      <p>Zadejte přihlašovací údaje pro přístup ke správě obsahu.</p>
       <div class="admin-form">
-        <input type="password" id="adminPassword" placeholder="Heslo..." style="text-align:center;">
+        <input type="text" id="adminUsername" placeholder="Uživatelské jméno" style="text-align:center;" autocomplete="username">
+        <input type="password" id="adminPassword" placeholder="Heslo" style="text-align:center;margin-top:0.5rem;" autocomplete="current-password">
         <button id="loginBtn" class="admin-btn" style="width:100%;justify-content:center;margin-top:0.75rem;">
           <i class="fas fa-lock-open"></i> Přihlásit se
         </button>
-        <p id="loginError" class="admin-message error" style="display:none;margin-top:1rem;">Nesprávné heslo.</p>
+        <p id="loginError" class="admin-message error" style="display:none;margin-top:1rem;">Nesprávné jméno nebo heslo.</p>
       </div>
     </div>
 
@@ -115,6 +116,7 @@
         <button class="admin-tab" data-tab="shop"><i class="fas fa-shopping-bag"></i> Shop</button>
         <button class="admin-tab" data-tab="bio"><i class="fas fa-user"></i> Bio</button>
         <button class="admin-tab" data-tab="export"><i class="fas fa-download"></i> Export</button>
+        <button class="admin-tab" data-tab="account"><i class="fas fa-user-cog"></i> Účet</button>
       </div>
 
       <!-- TAB: CONCERTS -->
@@ -332,6 +334,26 @@
         </div>
       </div>
 
+      <!-- TAB: ACCOUNT -->
+      <div id="tab-account" class="admin-tab-content" style="display:none;">
+        <div class="admin-section">
+          <h2><i class="fas fa-user-shield"></i> Změna přihlašovacích údajů</h2>
+          <div class="admin-form">
+            <label>Nové uživatelské jméno</label>
+            <input type="text" id="newUsername" placeholder="Zadejte nové jméno..." autocomplete="off">
+            <label>Nové heslo</label>
+            <input type="password" id="newPassword" placeholder="Zadejte nové heslo..." autocomplete="new-password">
+            <label>Potvrzení hesla</label>
+            <input type="password" id="confirmPassword" placeholder="Zopakujte nové heslo..." autocomplete="new-password">
+            <button class="admin-btn" onclick="changeCredentials()"><i class="fas fa-save"></i> Uložit nové údaje</button>
+            <p style="color:var(--grey);font-size:0.8rem;margin-top:0.75rem;">
+              <i class="fas fa-info-circle"></i> Po změně údajů je potřeba <strong>Publikovat na web</strong>, aby se nové údaje projevily.
+              Heslo je uloženo bezpečně jako SHA-256 hash — nikde se neukládá v čitelné podobě.
+            </p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -353,6 +375,15 @@
   const TYPE_ICONS = { koncert:'fa-guitar', festival:'fa-music', akce:'fa-glass-cheers', moderovani:'fa-microphone' };
   const TYPE_LABELS = { koncert:'Koncert', festival:'Festival', akce:'Akce', moderovani:'Moderování' };
 
+  // ---- SHA-256 HASH UTIL ----
+  async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   // ---- AUTH ----
   async function checkAuth() {
     const stored = sessionStorage.getItem('kudla_admin');
@@ -361,30 +392,70 @@
   }
 
   document.getElementById('loginBtn').addEventListener('click', async () => {
+    const user = document.getElementById('adminUsername').value.trim();
     const pwd = document.getElementById('adminPassword').value;
+    if (!user || !pwd) { document.getElementById('loginError').style.display = 'block'; return; }
+
     try {
       const res = await fetch('data/site.json');
       siteData = await res.json();
-      if (pwd === siteData.adminPassword) {
+
+      const inputHash = await sha256(user + ':' + pwd);
+
+      if (siteData.adminHash && inputHash === siteData.adminHash) {
+        sessionStorage.setItem('kudla_admin', 'true');
+        showAdmin();
+      } else if (!siteData.adminHash && siteData.adminPassword && pwd === siteData.adminPassword) {
+        // Backwards compatibility: old plaintext password (any username)
         sessionStorage.setItem('kudla_admin', 'true');
         showAdmin();
       } else {
         document.getElementById('loginError').style.display = 'block';
       }
     } catch(e) {
-      if (pwd === 'kudla2026') { sessionStorage.setItem('kudla_admin','true'); showAdmin(); }
-      else { document.getElementById('loginError').style.display = 'block'; }
+      // Fallback if site.json unavailable
+      const fallbackHash = await sha256(user + ':' + pwd);
+      if (fallbackHash === 'b3abc41143ced92bc70ffdfb50cafd16c53baf041a0615ceb2cb0a45fc93a6b2') {
+        sessionStorage.setItem('kudla_admin','true'); showAdmin();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
     }
   });
 
   document.getElementById('adminPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('loginBtn').click();
   });
+  document.getElementById('adminUsername').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('adminPassword').focus();
+  });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('kudla_admin');
     location.reload();
   });
+
+  // ---- CHANGE CREDENTIALS ----
+  async function changeCredentials() {
+    const newUser = document.getElementById('newUsername').value.trim();
+    const newPwd = document.getElementById('newPassword').value;
+    const confirmPwd = document.getElementById('confirmPassword').value;
+
+    if (!newUser || !newPwd) { showMessage('Vyplňte jméno i heslo.', 'error'); return; }
+    if (newPwd.length < 6) { showMessage('Heslo musí mít alespoň 6 znaků.', 'error'); return; }
+    if (newPwd !== confirmPwd) { showMessage('Hesla se neshodují.', 'error'); return; }
+
+    const newHash = await sha256(newUser + ':' + newPwd);
+    siteData.adminUser = newUser;
+    siteData.adminHash = newHash;
+    delete siteData.adminPassword; // Remove old plaintext password if present
+
+    saveLocal('site', siteData);
+    showMessage('<i class="fas fa-check-circle"></i> Přihlašovací údaje změněny. Nezapomeňte <strong>Publikovat na web</strong>.', 'success');
+
+    // Clear form
+    ['newUsername','newPassword','confirmPassword'].forEach(id => document.getElementById(id).value = '');
+  }
 
   function showAdmin() {
     document.getElementById('loginScreen').style.display = 'none';
@@ -407,12 +478,13 @@
   // ---- DATA LOADING ----
   async function loadAllData() {
     try {
-      const [concerts, videos, gallery, shop, bio] = await Promise.all([
+      const [concerts, videos, gallery, shop, bio, site] = await Promise.all([
         fetch('data/concerts.json').then(r => r.json()).catch(() => ({ upcoming: [], past: [] })),
         fetch('data/videos.json').then(r => r.json()).catch(() => ({ featured: {youtubeId:'',title:'',description:''}, videos: [] })),
         fetch('data/gallery.json').then(r => r.json()).catch(() => ({ photos: [] })),
         fetch('data/shop.json').then(r => r.json()).catch(() => ({ albums: [], shippingNote: '' })),
-        fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[] }))
+        fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[] })),
+        fetch('data/site.json').then(r => r.json()).catch(() => ({}))
       ]);
 
       concertsData = JSON.parse(localStorage.getItem('kudla_concerts')) || concerts;
@@ -420,6 +492,7 @@
       galleryData = JSON.parse(localStorage.getItem('kudla_gallery')) || gallery;
       shopData = JSON.parse(localStorage.getItem('kudla_shop')) || shop;
       bioData = JSON.parse(localStorage.getItem('kudla_bio')) || bio;
+      siteData = JSON.parse(localStorage.getItem('kudla_site')) || site;
 
       // Migrate old format concerts (venue with city combined)
       migrateConcerts();
@@ -813,7 +886,7 @@
 
   // ---- EXPORT ----
   function downloadJSON(name) {
-    const dataMap = { concerts: concertsData, videos: videosData, gallery: galleryData, shop: shopData, bio: bioData };
+    const dataMap = { concerts: concertsData, videos: videosData, gallery: galleryData, shop: shopData, bio: bioData, site: siteData };
     const blob = new Blob([JSON.stringify(dataMap[name], null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -823,8 +896,8 @@
   }
 
   function downloadAllJSON() {
-    ['concerts','videos','gallery','shop','bio'].forEach(name => {
-      setTimeout(() => downloadJSON(name), 200 * ['concerts','videos','gallery','shop','bio'].indexOf(name));
+    ['concerts','videos','gallery','shop','bio','site'].forEach(name => {
+      setTimeout(() => downloadJSON(name), 200 * ['concerts','videos','gallery','shop','bio','site'].indexOf(name));
     });
   }
 
@@ -841,7 +914,8 @@
       'videos.json': videosData,
       'gallery.json': galleryData,
       'shop.json': shopData,
-      'bio.json': bioData
+      'bio.json': bioData,
+      'site.json': siteData
     };
 
     showMessage('<i class="fas fa-spinner fa-spin"></i> Nahrávám na GitHub...', 'success');
@@ -876,7 +950,7 @@
     }
 
     // Success!
-    ['concerts','videos','gallery','shop','bio'].forEach(k => localStorage.removeItem('kudla_' + k));
+    ['concerts','videos','gallery','shop','bio','site'].forEach(k => localStorage.removeItem('kudla_' + k));
     hasUnsavedChanges = false;
     updatePublishBar();
     showMessage('<i class="fas fa-check-circle"></i> Publikováno! Web se aktualizuje do 1-2 minut. <a href="https://kudlazbrna.netlify.app" target="_blank" style="color:var(--accent-bright);">Zobrazit web</a>', 'success');

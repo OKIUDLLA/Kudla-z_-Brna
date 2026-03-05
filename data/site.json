@@ -12,5 +12,6 @@
     "youtube": "https://www.youtube.com/@kudlazbrna",
     "bandzone": "https://bandzone.cz/kudlazbrna"
   },
-  "adminPassword": "kudla2026"
+  "adminUser": "kudla",
+  "adminHash": "b3abc41143ced92bc70ffdfb50cafd16c53baf041a0615ceb2cb0a45fc93a6b2"
 }
