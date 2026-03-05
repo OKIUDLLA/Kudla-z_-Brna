@@ -1,13 +1,27 @@
 {
   "photos": [
-    { "src": "img/gallery/foto-01.jpg", "alt": "Kudla z Brna — koncert" },
-    { "src": "img/gallery/foto-02.jpg", "alt": "Kudla z Brna — na pódiu" },
-    { "src": "img/gallery/foto-03.jpg", "alt": "Kudla z Brna — festival" },
-    { "src": "img/gallery/foto-04.jpg", "alt": "Kudla z Brna — živě" },
-    { "src": "img/gallery/foto-05.jpg", "alt": "Kudla z Brna — kytara" },
-    { "src": "img/gallery/foto-06.jpg", "alt": "Kudla z Brna — vystoupení" },
-    { "src": "img/gallery/foto-07.jpg", "alt": "Kudla z Brna — looper" },
-    { "src": "img/gallery/foto-08.jpg", "alt": "Kudla z Brna — koncertní fotografie" },
-    { "src": "img/gallery/foto-09.jpg", "alt": "Kudla z Brna — hudba naživo" }
+    { "src": "img/gallery/gallery-01.jpg", "alt": "Kudla z Brna — portrét" },
+    { "src": "img/gallery/gallery-02.jpg", "alt": "Kudla z Brna — se sluchátky" },
+    { "src": "img/gallery/gallery-03.jpg", "alt": "Kudla z Brna — foto Pavel Hladký" },
+    { "src": "img/gallery/gallery-04.jpg", "alt": "Kudla z Brna — koncert" },
+    { "src": "img/gallery/gallery-05.jpg", "alt": "Kudla z Brna — UK Semál" },
+    { "src": "img/gallery/gallery-06.jpg", "alt": "Kudla z Brna — hadr" },
+    { "src": "img/gallery/gallery-07.jpg", "alt": "Kudla z Brna — živě s kytarou" },
+    { "src": "img/gallery/gallery-08.jpg", "alt": "Kudla z Brna — koncert venku" },
+    { "src": "img/gallery/gallery-09.jpg", "alt": "Kudla z Brna — na pódiu" },
+    { "src": "img/gallery/gallery-10.jpg", "alt": "Kudla z Brna — šrot" },
+    { "src": "img/gallery/gallery-11.jpg", "alt": "Kudla z Brna — s kapelou" },
+    { "src": "img/gallery/gallery-12.jpg", "alt": "Kudla z Brna — RockWine" },
+    { "src": "img/gallery/gallery-13.jpg", "alt": "Kudla z Brna — RockWine 2" },
+    { "src": "img/gallery/gallery-14.jpg", "alt": "Kudla z Brna — zpěv" },
+    { "src": "img/gallery/gallery-15.jpg", "alt": "Kudla z Brna — detail" },
+    { "src": "img/gallery/gallery-16.jpg", "alt": "Kudla z Brna — looper" },
+    { "src": "img/gallery/gallery-17.jpg", "alt": "Kudla z Brna — kytara detail" },
+    { "src": "img/gallery/gallery-18.jpg", "alt": "Kudla z Brna — vystoupení" },
+    { "src": "img/gallery/gallery-19.jpg", "alt": "Kudla z Brna — pedály" },
+    { "src": "img/gallery/gallery-20.jpg", "alt": "Kudla z Brna — příprava" },
+    { "src": "img/gallery/gallery-21.jpg", "alt": "Kudla z Brna — venkovní koncert" },
+    { "src": "img/gallery/gallery-22.jpg", "alt": "Kudla z Brna — černobílý portrét" },
+    { "src": "img/gallery/gallery-23.jpg", "alt": "Kudla z Brna — zahradní koncert" }
   ]
 }
