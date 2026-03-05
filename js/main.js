@@ -440,7 +440,7 @@ async function loadShop() {
           <h3>${a.title}</h3>
           <p class="album-price">${a.price} Kč</p>
           <p class="album-shipping">+ ${a.shipping} Kč poštovné</p>
-          <a href="mailto:${a.orderEmail}?subject=Objednávka CD: ${a.title}&body=Dobrý den, rád/a bych si objednal/a CD '${a.title}'." class="btn btn-primary">
+          <a href="mailto:${a.orderEmail}?subject=${encodeURIComponent('Objednávka CD: ' + a.title)}&body=${encodeURIComponent('Dobrý den, rád/a bych si objednal/a CD \'' + a.title + '\'.')}" class="btn btn-primary">
             <i class="fas fa-envelope"></i> Objednat
           </a>
         </div>
