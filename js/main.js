@@ -82,18 +82,32 @@ function initLightbox() {
   const nextBtn = lightbox.querySelector('.lightbox-next');
   const items = document.querySelectorAll('.gallery-item');
   let current = 0;
+  let lastFocused = null;
   const images = [];
   items.forEach((item, i) => {
     const itemImg = item.querySelector('img');
     if (itemImg) {
       images.push(itemImg.dataset.full || itemImg.src);
-      const openLB = () => { current = i; show(current); lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; };
+      const openLB = () => { lastFocused = document.activeElement; current = i; show(current); lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; if (closeBtn) closeBtn.focus(); };
       item.addEventListener('click', openLB);
       item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLB(); } });
     }
   });
   function show(idx) { if (images[idx]) img.src = images[idx]; }
-  function closeLB() { lightbox.classList.remove('active'); document.body.style.overflow = ''; }
+  function closeLB() { lightbox.classList.remove('active'); document.body.style.overflow = ''; if (lastFocused) lastFocused.focus(); }
+
+  // Focus trap inside lightbox
+  function trapFocus(e) {
+    if (!lightbox.classList.contains('active') || e.key !== 'Tab') return;
+    const focusable = lightbox.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+    else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  }
+  document.addEventListener('keydown', trapFocus);
+
   closeBtn && closeBtn.addEventListener('click', closeLB);
   lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLB(); });
   prevBtn && prevBtn.addEventListener('click', e => { e.stopPropagation(); current = (current - 1 + images.length) % images.length; show(current); });
@@ -248,6 +262,7 @@ async function loadConcerts() {
   container.querySelectorAll('.reveal').forEach(el => {
     el.classList.add('visible');
   });
+  initConcertKeyboard();
 }
 
 // CONCERTS FULL (for koncerty.html)
@@ -287,6 +302,7 @@ async function loadConcertsFull() {
         </div>`;
     });
     upcomingContainer.innerHTML = html || '<p style="color:var(--grey);">Žádné nadcházející koncerty.</p>';
+    initConcertKeyboard();
   }
 
   // Inject structured data for SEO
@@ -646,8 +662,9 @@ function openConcertDetail(concertId) {
       ${linksHtml ? `<div class="concert-detail-links">${linksHtml}</div>` : ''}
     </div>`;
   document.body.appendChild(modal);
-  requestAnimationFrame(() => modal.classList.add('active'));
-  document.addEventListener('keydown', concertModalEsc);
+  window._concertModalTrigger = document.activeElement;
+  requestAnimationFrame(() => { modal.classList.add('active'); modal.querySelector('.concert-modal-close').focus(); });
+  document.addEventListener('keydown', concertModalKeyHandler);
 }
 
 function closeConcertDetail() {
@@ -656,11 +673,23 @@ function closeConcertDetail() {
     modal.classList.remove('active');
     setTimeout(() => modal.remove(), 300);
   }
-  document.removeEventListener('keydown', concertModalEsc);
+  document.removeEventListener('keydown', concertModalKeyHandler);
+  if (window._concertModalTrigger) { window._concertModalTrigger.focus(); window._concertModalTrigger = null; }
 }
 
-function concertModalEsc(e) {
-  if (e.key === 'Escape') closeConcertDetail();
+function concertModalKeyHandler(e) {
+  if (e.key === 'Escape') { closeConcertDetail(); return; }
+  // Focus trap
+  if (e.key === 'Tab') {
+    const modal = document.getElementById('concert-modal');
+    if (!modal) return;
+    const focusable = modal.querySelectorAll('a[href], button, input, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+    else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  }
 }
 
 // STRUCTURED DATA — inject JSON-LD for concerts
@@ -767,6 +796,17 @@ function injectSkeletons() {
     for (let i = 0; i < 6; i++) s += '<div class="skeleton" style="aspect-ratio:1;border-radius:8px"></div>';
     galleryGrid.innerHTML = s;
   }
+}
+
+// Make clickable concert items keyboard-accessible
+function initConcertKeyboard() {
+  document.querySelectorAll('.concert-item.clickable, .next-concert-card.clickable').forEach(el => {
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+    if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+    });
+  });
 }
 
 // Initialize data loading on page load
