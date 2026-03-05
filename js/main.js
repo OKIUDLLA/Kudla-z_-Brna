@@ -117,21 +117,50 @@ async function loadJSON(path) {
 }
 
 // Format date from ISO string to Czech format
+const MONTHS_CS = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
+const MONTHS_FULL = ['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+const DAYS_CS = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'];
+
 function formatDate(dateStr) {
   const d = new Date(dateStr);
-  const months = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
   return {
     day: d.getDate(),
-    monthYear: months[d.getMonth()] + ' ' + d.getFullYear()
+    monthYear: MONTHS_CS[d.getMonth()] + ' ' + d.getFullYear()
   };
 }
 
-// Check if date is in past
 function isPast(dateStr) {
   return new Date(dateStr) < new Date();
 }
 
-// CONCERTS
+// Concert venue string (handles new city field)
+function concertVenueStr(c) {
+  if (c.city) return c.venue + ', ' + c.city;
+  return c.venue;
+}
+
+// Countdown text for upcoming concert
+function countdownText(dateStr) {
+  const now = new Date();
+  const target = new Date(dateStr);
+  const diffMs = target - now;
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return '';
+  if (diffDays === 0) return 'DNES!';
+  if (diffDays === 1) return 'Zítra';
+  if (diffDays <= 7) {
+    const dayName = DAYS_CS[target.getDay()];
+    return 'Tento ' + dayName;
+  }
+  if (diffDays <= 30) return 'Za ' + diffDays + ' dní';
+  return '';
+}
+
+// Type badge icons
+const TYPE_ICONS = { koncert:'fa-guitar', festival:'fa-music', akce:'fa-glass-cheers', moderovani:'fa-microphone' };
+
+// HOMEPAGE — featured next concert + list
 async function loadConcerts() {
   const container = document.getElementById('concerts-list');
   if (!container) return;
@@ -139,32 +168,66 @@ async function loadConcerts() {
   const data = await loadJSON('data/concerts.json');
   if (!data) { container.innerHTML = '<p style="color:var(--grey);text-align:center;">Žádné koncerty k zobrazení.</p>'; return; }
 
-  let html = '';
+  if (!data.upcoming || data.upcoming.length === 0) {
+    container.innerHTML = '<p style="color:var(--grey);text-align:center;padding:2rem 0;">Žádné nadcházející koncerty. Sledujte sociální sítě.</p>';
+    return;
+  }
 
-  // Show upcoming concerts
-  if (data.upcoming && data.upcoming.length > 0) {
-    data.upcoming.forEach(c => {
-      const fd = formatDate(c.date);
+  const next = data.upcoming[0];
+  const rest = data.upcoming.slice(1, 4);
+  const fd = formatDate(next.date);
+  const cd = countdownText(next.date);
+  const d = new Date(next.date);
+
+  let html = `
+    <div class="next-concert-card reveal">
+      <div class="next-concert-date">
+        <span class="next-day">${fd.day}</span>
+        <span class="next-month">${MONTHS_FULL[d.getMonth()]}</span>
+        ${cd ? `<span class="next-countdown">${cd}</span>` : ''}
+      </div>
+      <div class="next-concert-body">
+        <div class="next-concert-meta">
+          ${next.type ? `<span class="concert-type-tag ${next.type}"><i class="fas ${TYPE_ICONS[next.type] || 'fa-guitar'}"></i> ${next.type === 'koncert' ? 'Koncert' : next.type === 'festival' ? 'Festival' : next.type === 'moderovani' ? 'Moderování' : 'Akce'}</span>` : ''}
+          ${next.time ? `<span class="concert-time"><i class="fas fa-clock"></i> ${next.time}</span>` : ''}
+        </div>
+        <h3 class="next-concert-title">${next.title}</h3>
+        <p class="next-concert-venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(next)}</p>
+        ${next.note ? `<p class="next-concert-note">${next.note}</p>` : ''}
+        <div class="next-concert-actions">
+          ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
+        </div>
+      </div>
+    </div>`;
+
+  // Remaining concerts (compact list)
+  if (rest.length > 0) {
+    html += '<div class="upcoming-list reveal">';
+    rest.forEach(c => {
+      const rfd = formatDate(c.date);
       html += `
         <div class="concert-item">
           <div class="concert-date">
-            <span class="day">${fd.day}</span>
-            <span class="month-year">${fd.monthYear}</span>
+            <span class="day">${rfd.day}</span>
+            <span class="month-year">${rfd.monthYear}</span>
           </div>
           <div class="concert-info">
             <h3>${c.title}</h3>
-            <p class="venue"><i class="fas fa-map-marker-alt"></i> ${c.venue}</p>
+            <p class="venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}</p>
           </div>
           <div class="concert-link">
-            ${c.ticketUrl ? `<a href="${c.ticketUrl}" class="btn btn-primary btn-sm" target="_blank">Vstupenky</a>` : '<span class="btn btn-ghost btn-sm" style="opacity:0.5;pointer-events:none;">Brzy</span>'}
+            ${c.ticketUrl ? `<a href="${c.ticketUrl}" class="btn btn-primary btn-sm" target="_blank">Vstupenky</a>` : ''}
           </div>
         </div>`;
     });
-  } else {
-    html += '<p style="color:var(--grey);text-align:center;padding:2rem 0;">Žádné nadcházející koncerty. Sledujte sociální sítě.</p>';
+    html += '</div>';
   }
 
   container.innerHTML = html;
+  // Re-init reveal for new elements
+  container.querySelectorAll('.reveal').forEach(el => {
+    el.classList.add('visible');
+  });
 }
 
 // CONCERTS FULL (for koncerty.html)
@@ -180,6 +243,7 @@ async function loadConcertsFull() {
     let html = '';
     data.upcoming.forEach(c => {
       const fd = formatDate(c.date);
+      const cd = countdownText(c.date);
       html += `
         <div class="concert-item">
           <div class="concert-date">
@@ -188,8 +252,12 @@ async function loadConcertsFull() {
           </div>
           <div class="concert-info">
             <h3>${c.title}</h3>
-            <p class="venue"><i class="fas fa-map-marker-alt"></i> ${c.venue}</p>
+            <p class="venue">
+              <i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}
+              ${c.time ? ` <span style="margin-left:0.5rem;"><i class="fas fa-clock"></i> ${c.time}</span>` : ''}
+            </p>
             ${c.note ? `<p class="venue">${c.note}</p>` : ''}
+            ${cd ? `<span class="concert-countdown-badge">${cd}</span>` : ''}
           </div>
           <div class="concert-link">
             ${c.ticketUrl ? `<a href="${c.ticketUrl}" class="btn btn-primary btn-sm" target="_blank">Vstupenky</a>` : ''}
@@ -200,7 +268,6 @@ async function loadConcertsFull() {
   }
 
   if (pastContainer && data.past) {
-    // Group by year
     const byYear = {};
     data.past.forEach(c => {
       const year = new Date(c.date).getFullYear();
@@ -220,7 +287,7 @@ async function loadConcertsFull() {
             </div>
             <div class="concert-info">
               <h3>${c.title}</h3>
-              <p class="venue"><i class="fas fa-map-marker-alt"></i> ${c.venue}</p>
+              <p class="venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}</p>
             </div>
           </div>`;
       });

@@ -7,6 +7,66 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Admin-specific overrides */
+    .admin-publish-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(56,182,255,0.08); border:1px solid rgba(56,182,255,0.25);
+      padding:0.75rem 1.25rem; margin-bottom:1.5rem; border-radius:6px;
+    }
+    .admin-publish-bar span { color:var(--accent-bright); font-size:0.85rem; font-weight:500; }
+    .admin-publish-bar .admin-btn { margin-top:0; }
+    .admin-publish-bar.published { background:rgba(46,204,113,0.08); border-color:rgba(46,204,113,0.25); }
+    .admin-publish-bar.published span { color:#2ecc71; }
+    .admin-count { font-size:0.75rem; color:var(--grey); font-weight:400; font-family:var(--font-body); }
+    .admin-form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .admin-form-row-3 { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:1rem; }
+    .concert-card {
+      background:var(--dark-3); border:1px solid rgba(255,255,255,0.04);
+      padding:1rem 1.25rem; margin-bottom:0.5rem; border-radius:8px;
+      display:grid; grid-template-columns:60px 1fr auto; gap:1rem; align-items:center;
+      transition:all 0.3s var(--ease);
+    }
+    .concert-card:hover { border-color:rgba(255,255,255,0.1); }
+    .concert-card-date {
+      text-align:center; background:var(--dark-4); border-radius:6px; padding:0.5rem 0.25rem;
+    }
+    .concert-card-date .day {
+      display:block; font-family:var(--font-display); font-size:1.4rem; font-weight:800;
+      color:var(--accent-bright); line-height:1;
+    }
+    .concert-card-date .month {
+      display:block; font-size:0.6rem; font-weight:600; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--grey); margin-top:0.15rem;
+    }
+    .concert-card-info h4 { font-family:var(--font-body); font-size:0.95rem; font-weight:600; margin-bottom:0.15rem; }
+    .concert-card-info .meta { color:var(--grey-light); font-size:0.8rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+    .concert-card-info .meta i { font-size:0.7rem; }
+    .concert-type-badge {
+      display:inline-block; font-size:0.6rem; font-weight:600; letter-spacing:0.05em;
+      text-transform:uppercase; padding:0.15rem 0.5rem; border-radius:3px;
+      background:rgba(56,182,255,0.15); color:var(--accent-bright);
+    }
+    .concert-type-badge.festival { background:rgba(155,89,182,0.15); color:#bb6bd9; }
+    .concert-type-badge.akce { background:rgba(46,204,113,0.15); color:#2ecc71; }
+    .concert-type-badge.moderovani { background:rgba(241,196,15,0.15); color:#f1c40f; }
+    .concert-card-actions { display:flex; gap:0.4rem; }
+    .concert-card-actions button {
+      background:none; border:1px solid var(--grey-dark); color:var(--grey-light);
+      padding:0.35rem 0.6rem; font-size:0.75rem; cursor:pointer; border-radius:4px; transition:all 0.3s;
+    }
+    .concert-card-actions button:hover { border-color:var(--accent-bright); color:var(--accent-bright); }
+    .concert-card-actions button.delete:hover { border-color:#e74c3c; color:#e74c3c; }
+    .concert-card.past-card { opacity:0.5; }
+    .concert-card.past-card:hover { opacity:0.75; }
+    .admin-form select {
+      width:100%; padding:0.7rem 1rem; font-family:var(--font-body); font-size:0.95rem;
+      background:var(--dark-4); border:1px solid var(--grey-dark); color:var(--white);
+      transition:border-color 0.3s; appearance:auto;
+    }
+    .admin-form select:focus { outline:none; border-color:var(--accent-bright); }
+    .admin-token-saved { color:#2ecc71; font-size:0.8rem; margin-top:0.3rem; }
+  </style>
 </head>
 <body>
 
@@ -59,28 +119,61 @@
 
       <!-- TAB: CONCERTS -->
       <div id="tab-concerts" class="admin-tab-content">
+        <!-- Publish bar -->
+        <div id="concertPublishBar" class="admin-publish-bar" style="display:none;">
+          <span id="publishBarText"><i class="fas fa-exclamation-circle"></i> Máte neuložené změny</span>
+          <button class="admin-btn" id="publishBarBtn" onclick="quickPublish()"><i class="fas fa-upload"></i> Publikovat na web</button>
+        </div>
+
         <div class="admin-section">
-          <h2><i class="fas fa-plus-circle"></i> Přidat koncert</h2>
+          <h2><i class="fas fa-plus-circle"></i> <span id="concertFormTitle">Přidat koncert</span></h2>
           <div class="admin-form" id="concertForm">
-            <label>Datum</label>
-            <input type="date" id="concertDate">
+            <div class="admin-form-row">
+              <div>
+                <label>Datum</label>
+                <input type="date" id="concertDate">
+              </div>
+              <div>
+                <label>Čas začátku</label>
+                <input type="time" id="concertTime" value="20:00">
+              </div>
+            </div>
             <label>Název akce</label>
-            <input type="text" id="concertTitle" placeholder="Název koncertu...">
-            <label>Místo konání</label>
-            <input type="text" id="concertVenue" placeholder="Klub, město...">
+            <input type="text" id="concertTitle" placeholder="Např. Kudla sólo — looper session">
+            <div class="admin-form-row">
+              <div>
+                <label>Místo (název podniku)</label>
+                <input type="text" id="concertVenue" placeholder="Kabinet Múz">
+              </div>
+              <div>
+                <label>Město</label>
+                <input type="text" id="concertCity" placeholder="Brno" value="Brno">
+              </div>
+            </div>
+            <label>Typ akce</label>
+            <select id="concertType">
+              <option value="koncert">Koncert</option>
+              <option value="festival">Festival</option>
+              <option value="akce">Akce / Oslava</option>
+              <option value="moderovani">Moderování</option>
+            </select>
             <label>URL vstupenek (nepovinné)</label>
-            <input type="url" id="concertTicket" placeholder="https://...">
+            <input type="url" id="concertTicket" placeholder="https://goout.net/...">
             <label>Poznámka (nepovinné)</label>
-            <input type="text" id="concertNote" placeholder="Např. support act...">
-            <button class="admin-btn" onclick="addConcert()"><i class="fas fa-plus"></i> Přidat koncert</button>
+            <input type="text" id="concertNote" placeholder="Např. s hostem, support act...">
+            <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+              <button class="admin-btn" id="concertSubmitBtn" onclick="saveConcert()"><i class="fas fa-plus"></i> Přidat koncert</button>
+              <button class="admin-btn secondary" id="concertCancelBtn" onclick="cancelEdit()" style="display:none;"><i class="fas fa-times"></i> Zrušit úpravu</button>
+            </div>
+            <input type="hidden" id="concertEditId" value="">
           </div>
         </div>
         <div class="admin-section">
-          <h2><i class="fas fa-calendar-check"></i> Nadcházející koncerty</h2>
+          <h2><i class="fas fa-calendar-check"></i> Nadcházející koncerty <span id="upcomingCount" class="admin-count"></span></h2>
           <div id="upcomingList"></div>
         </div>
         <div class="admin-section">
-          <h2><i class="fas fa-history"></i> Odehrané koncerty</h2>
+          <h2><i class="fas fa-history"></i> Odehrané koncerty <span id="pastCount" class="admin-count"></span></h2>
           <div id="pastList"></div>
         </div>
       </div>
@@ -207,22 +300,24 @@
           </div>
         </div>
         <div class="admin-section">
-          <h2><i class="fab fa-github"></i> Přímá aktualizace přes GitHub</h2>
+          <h2><i class="fab fa-github"></i> GitHub nastavení</h2>
           <p style="color:var(--grey-light);margin-bottom:1rem;">
-            Zadejte GitHub Personal Access Token pro přímé nahrání změn na web. Token vytvoříte na
+            Zadejte GitHub Personal Access Token. Token se zapamatuje v prohlížeči, nemusíte ho zadávat pokaždé. Token vytvoříte na
             <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent-bright);">github.com/settings/tokens</a>
             s oprávněním <code>repo</code>.
           </p>
           <div class="admin-form">
             <label>GitHub Token</label>
             <input type="password" id="githubToken" placeholder="ghp_...">
+            <p id="tokenStatus" class="admin-token-saved" style="display:none;"><i class="fas fa-check-circle"></i> Token je uložen</p>
             <label>Repozitář</label>
             <input type="text" id="githubRepo" value="OKIUDLLA/Kudla-z-Brna">
             <label>Cesta k datové složce</label>
             <input type="text" id="githubPath" value="kudlazbrna-web/data">
-            <button class="admin-btn" onclick="pushToGitHub()">
-              <i class="fas fa-upload"></i> Nahrát změny na GitHub
-            </button>
+            <div style="display:flex;gap:0.75rem;margin-top:0.5rem;">
+              <button class="admin-btn" onclick="saveGitHubSettings()"><i class="fas fa-save"></i> Uložit nastavení</button>
+              <button class="admin-btn" onclick="pushToGitHub()"><i class="fas fa-upload"></i> Nahrát vše na GitHub</button>
+            </div>
           </div>
         </div>
         <div class="admin-section">
@@ -231,10 +326,8 @@
             <p><strong style="color:var(--white);">Jak to funguje?</strong></p>
             <p>1. Upravte obsah v záložkách výše (koncerty, videa, fotky, shop, bio)</p>
             <p>2. Změny se ukládají do prohlížeče (zůstanou i po zavření)</p>
-            <p>3. Pro publikování na web: buď stáhněte JSON soubory a nahrajte na GitHub, nebo použijte přímou aktualizaci s tokenem</p>
+            <p>3. Klikněte na <strong style="color:var(--accent-bright);">Publikovat na web</strong> (modrý pruh nahoře) nebo použijte záložku Export</p>
             <p>4. Po nahrání na GitHub se web automaticky aktualizuje (obvykle do 1-2 minut)</p>
-            <p style="margin-top:1rem;"><strong style="color:var(--white);">Jak přidat fotky?</strong></p>
-            <p>Fotky je potřeba nahrát přímo na GitHub do složky <code>kudlazbrna-web/img/gallery/</code>. Pojmenujte je jednoduše bez diakritiky a mezer.</p>
           </div>
         </div>
       </div>
@@ -244,7 +337,7 @@
 
   <script>
   // ============================================
-  // ADMIN PANEL — Kudla z Brna
+  // ADMIN PANEL — Kudla z Brna v2
   // ============================================
 
   // Data storage
@@ -254,6 +347,11 @@
   let shopData = { albums: [], shippingNote: '' };
   let bioData = { headline: '', shortBio: '', longBio: '', tags: [] };
   let siteData = {};
+  let hasUnsavedChanges = false;
+
+  const MONTHS_CS = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
+  const TYPE_ICONS = { koncert:'fa-guitar', festival:'fa-music', akce:'fa-glass-cheers', moderovani:'fa-microphone' };
+  const TYPE_LABELS = { koncert:'Koncert', festival:'Festival', akce:'Akce', moderovani:'Moderování' };
 
   // ---- AUTH ----
   async function checkAuth() {
@@ -274,7 +372,6 @@
         document.getElementById('loginError').style.display = 'block';
       }
     } catch(e) {
-      // Fallback
       if (pwd === 'kudla2026') { sessionStorage.setItem('kudla_admin','true'); showAdmin(); }
       else { document.getElementById('loginError').style.display = 'block'; }
     }
@@ -293,6 +390,7 @@
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
     document.getElementById('logoutBtn').style.display = 'inline-flex';
+    loadGitHubSettings();
     loadAllData();
   }
 
@@ -317,28 +415,79 @@
         fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[] }))
       ]);
 
-      // Check localStorage for unsaved changes
       concertsData = JSON.parse(localStorage.getItem('kudla_concerts')) || concerts;
       videosData = JSON.parse(localStorage.getItem('kudla_videos')) || videos;
       galleryData = JSON.parse(localStorage.getItem('kudla_gallery')) || gallery;
       shopData = JSON.parse(localStorage.getItem('kudla_shop')) || shop;
       bioData = JSON.parse(localStorage.getItem('kudla_bio')) || bio;
 
+      // Migrate old format concerts (venue with city combined)
+      migrateConcerts();
+      // Auto-move past concerts
+      autoMovePastConcerts();
+
+      hasUnsavedChanges = !!localStorage.getItem('kudla_concerts');
+      updatePublishBar();
       renderAll();
     } catch(e) {
       showMessage('Chyba při načítání dat: ' + e.message, 'error');
     }
   }
 
-  function saveLocal(key, data) {
+  function migrateConcerts() {
+    // Migrate old format: if concert has no city field, try to split venue
+    const migrate = (list) => list.map(c => {
+      if (!c.city && c.venue && c.venue.includes(',')) {
+        const parts = c.venue.split(',');
+        c.venue = parts[0].trim();
+        c.city = parts.slice(1).join(',').trim();
+      }
+      if (!c.city) c.city = '';
+      if (!c.time) c.time = '20:00';
+      if (!c.type) c.type = 'koncert';
+      if (!c.id) c.id = c.date + '-' + (c.venue || '').toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 20);
+      return c;
+    });
+    concertsData.upcoming = migrate(concertsData.upcoming);
+    concertsData.past = migrate(concertsData.past);
+  }
+
+  function autoMovePastConcerts() {
+    const now = new Date();
+    const toMove = concertsData.upcoming.filter(c => new Date(c.date) < now);
+    if (toMove.length > 0) {
+      concertsData.upcoming = concertsData.upcoming.filter(c => new Date(c.date) >= now);
+      concertsData.past = [...toMove, ...concertsData.past];
+      concertsData.past.sort((a,b) => new Date(b.date) - new Date(a.date));
+      saveLocal('concerts', concertsData, true); // silent save
+    }
+  }
+
+  function saveLocal(key, data, silent) {
     localStorage.setItem('kudla_' + key, JSON.stringify(data));
-    showMessage('Změny uloženy lokálně. Pro publikování na web použijte záložku Export.', 'success');
+    hasUnsavedChanges = true;
+    updatePublishBar();
+    if (!silent) showMessage('Uloženo. Klikněte na <strong>Publikovat na web</strong> pro zveřejnění.', 'success');
   }
 
   function showMessage(text, type) {
     const el = document.getElementById('adminMessage');
     el.innerHTML = `<div class="admin-message ${type}">${text}</div>`;
     setTimeout(() => el.innerHTML = '', 5000);
+  }
+
+  function updatePublishBar() {
+    const bar = document.getElementById('concertPublishBar');
+    const text = document.getElementById('publishBarText');
+    const btn = document.getElementById('publishBarBtn');
+    if (hasUnsavedChanges) {
+      bar.style.display = 'flex';
+      bar.className = 'admin-publish-bar';
+      text.innerHTML = '<i class="fas fa-exclamation-circle"></i> Máte neuložené změny';
+      btn.style.display = '';
+    } else {
+      bar.style.display = 'none';
+    }
   }
 
   // ---- RENDER ----
@@ -350,103 +499,95 @@
     renderBio();
   }
 
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function renderConcertCard(c, index, type) {
+    const d = new Date(c.date);
+    const day = d.getDate();
+    const month = MONTHS_CS[d.getMonth()];
+    const typeClass = c.type || 'koncert';
+    const isPast = type === 'past';
+
+    return `
+      <div class="concert-card ${isPast ? 'past-card' : ''}">
+        <div class="concert-card-date">
+          <span class="day">${day}</span>
+          <span class="month">${month} ${d.getFullYear()}</span>
+        </div>
+        <div class="concert-card-info">
+          <h4>${esc(c.title)}</h4>
+          <div class="meta">
+            <span class="concert-type-badge ${typeClass}">${TYPE_LABELS[typeClass] || 'Koncert'}</span>
+            <span><i class="fas fa-clock"></i> ${c.time || '20:00'}</span>
+            <span><i class="fas fa-map-marker-alt"></i> ${esc(c.venue)}${c.city ? ', ' + esc(c.city) : ''}</span>
+            ${c.ticketUrl ? '<span><i class="fas fa-ticket-alt"></i> Vstupenky</span>' : ''}
+            ${c.note ? '<span><i class="fas fa-comment"></i> ' + esc(c.note) + '</span>' : ''}
+          </div>
+        </div>
+        <div class="concert-card-actions">
+          <button onclick="editConcert('${type}',${index})" title="Upravit"><i class="fas fa-pen"></i></button>
+          <button class="delete" onclick="removeConcert('${type}',${index})" title="Smazat"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+  }
+
   function renderConcerts() {
     const upEl = document.getElementById('upcomingList');
     const pastEl = document.getElementById('pastList');
+    const upCount = document.getElementById('upcomingCount');
+    const pastCount = document.getElementById('pastCount');
 
-    upEl.innerHTML = concertsData.upcoming.length ? concertsData.upcoming.map((c, i) => `
-      <div class="admin-item">
-        <div>
-          <h4>${c.title}</h4>
-          <span class="item-meta">${c.date} · ${c.venue}</span>
-        </div>
-        <div class="admin-item-actions">
-          <button onclick="removeConcert('upcoming',${i})"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné nadcházející koncerty.</p>';
+    upCount.textContent = concertsData.upcoming.length ? `(${concertsData.upcoming.length})` : '';
+    pastCount.textContent = concertsData.past.length ? `(${concertsData.past.length})` : '';
 
-    pastEl.innerHTML = concertsData.past.length ? concertsData.past.map((c, i) => `
-      <div class="admin-item">
-        <div>
-          <h4>${c.title}</h4>
-          <span class="item-meta">${c.date} · ${c.venue}</span>
-        </div>
-        <div class="admin-item-actions">
-          <button class="delete" onclick="removeConcert('past',${i})"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné odehrané koncerty.</p>';
+    upEl.innerHTML = concertsData.upcoming.length
+      ? concertsData.upcoming.map((c, i) => renderConcertCard(c, i, 'upcoming')).join('')
+      : '<p style="color:var(--grey);padding:1rem;text-align:center;">Žádné nadcházející koncerty. Přidejte nový výše.</p>';
+
+    pastEl.innerHTML = concertsData.past.length
+      ? concertsData.past.map((c, i) => renderConcertCard(c, i, 'past')).join('')
+      : '<p style="color:var(--grey);padding:1rem;">Žádné odehrané koncerty.</p>';
   }
 
-  function renderVideos() {
-    // Featured
-    if (videosData.featured) {
-      document.getElementById('featuredVideoId').value = videosData.featured.youtubeId || '';
-      document.getElementById('featuredVideoTitle').value = videosData.featured.title || '';
-      document.getElementById('featuredVideoDesc').value = videosData.featured.description || '';
-    }
-
-    const listEl = document.getElementById('videosList');
-    listEl.innerHTML = videosData.videos.length ? videosData.videos.map((v, i) => `
-      <div class="admin-item">
-        <div>
-          <h4>${v.title}</h4>
-          <span class="item-meta">ID: ${v.youtubeId || '(prázdné)'} · ${v.description}</span>
-        </div>
-        <div class="admin-item-actions">
-          <button class="delete" onclick="removeVideo(${i})"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná videa.</p>';
-  }
-
-  function renderGallery() {
-    const el = document.getElementById('photosList');
-    el.innerHTML = galleryData.photos.length ? galleryData.photos.map((p, i) => `
-      <div class="admin-item" style="display:block;padding:0.75rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span class="item-meta">${p.src}</span>
-          <button class="delete" onclick="removePhoto(${i})" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.5rem;cursor:pointer;font-size:0.75rem;"><i class="fas fa-trash"></i></button>
-        </div>
-        <span style="color:var(--grey);font-size:0.8rem;">${p.alt}</span>
-      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné fotky v galerii.</p>';
-  }
-
-  function renderShop() {
-    const el = document.getElementById('albumsList');
-    el.innerHTML = shopData.albums.length ? shopData.albums.map((a, i) => `
-      <div class="admin-item">
-        <div>
-          <h4>${a.title}</h4>
-          <span class="item-meta">${a.price} Kč + ${a.shipping} Kč poštovné</span>
-        </div>
-        <div class="admin-item-actions">
-          <button class="delete" onclick="removeAlbum(${i})"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná alba v shopu.</p>';
-
-    document.getElementById('shippingNote').value = shopData.shippingNote || '';
-  }
-
-  function renderBio() {
-    document.getElementById('bioHeadline').value = bioData.headline || '';
-    document.getElementById('bioShort').value = bioData.shortBio || '';
-    document.getElementById('bioLong').value = bioData.longBio || '';
-    document.getElementById('bioTags').value = (bioData.tags || []).join(', ');
-  }
-
-  // ---- ACTIONS ----
-  function addConcert() {
+  // ---- CONCERT CRUD ----
+  function saveConcert() {
     const date = document.getElementById('concertDate').value;
     const title = document.getElementById('concertTitle').value;
     const venue = document.getElementById('concertVenue').value;
     if (!date || !title || !venue) { showMessage('Vyplňte datum, název a místo.', 'error'); return; }
 
     const concert = {
-      date, title, venue,
+      id: date + '-' + venue.toLowerCase().replace(/[^a-z0-9]/g, '-').substring(0, 20),
+      date,
+      time: document.getElementById('concertTime').value || '20:00',
+      title,
+      venue,
+      city: document.getElementById('concertCity').value || '',
+      type: document.getElementById('concertType').value || 'koncert',
       ticketUrl: document.getElementById('concertTicket').value,
       note: document.getElementById('concertNote').value
     };
 
-    // Auto-sort: future = upcoming, past = past
+    const editId = document.getElementById('concertEditId').value;
+
+    if (editId) {
+      // Edit mode: find and replace
+      let found = false;
+      ['upcoming','past'].forEach(type => {
+        const idx = concertsData[type].findIndex(c => c.id === editId);
+        if (idx !== -1) {
+          concertsData[type].splice(idx, 1);
+          found = true;
+        }
+      });
+      cancelEdit();
+    }
+
+    // Insert into correct list
     if (new Date(date) >= new Date()) {
       concertsData.upcoming.push(concert);
       concertsData.upcoming.sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -457,8 +598,44 @@
 
     saveLocal('concerts', concertsData);
     renderConcerts();
-    // Clear form
+    clearConcertForm();
+  }
+
+  function editConcert(type, index) {
+    const c = concertsData[type][index];
+    if (!c) return;
+
+    document.getElementById('concertDate').value = c.date;
+    document.getElementById('concertTime').value = c.time || '20:00';
+    document.getElementById('concertTitle').value = c.title;
+    document.getElementById('concertVenue').value = c.venue;
+    document.getElementById('concertCity').value = c.city || '';
+    document.getElementById('concertType').value = c.type || 'koncert';
+    document.getElementById('concertTicket').value = c.ticketUrl || '';
+    document.getElementById('concertNote').value = c.note || '';
+    document.getElementById('concertEditId').value = c.id;
+
+    document.getElementById('concertFormTitle').textContent = 'Upravit koncert';
+    document.getElementById('concertSubmitBtn').innerHTML = '<i class="fas fa-save"></i> Uložit změny';
+    document.getElementById('concertCancelBtn').style.display = '';
+
+    // Scroll to form
+    document.getElementById('concertForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function cancelEdit() {
+    document.getElementById('concertEditId').value = '';
+    document.getElementById('concertFormTitle').textContent = 'Přidat koncert';
+    document.getElementById('concertSubmitBtn').innerHTML = '<i class="fas fa-plus"></i> Přidat koncert';
+    document.getElementById('concertCancelBtn').style.display = 'none';
+    clearConcertForm();
+  }
+
+  function clearConcertForm() {
     ['concertDate','concertTitle','concertVenue','concertTicket','concertNote'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('concertTime').value = '20:00';
+    document.getElementById('concertCity').value = 'Brno';
+    document.getElementById('concertType').value = 'koncert';
   }
 
   function removeConcert(type, index) {
@@ -468,6 +645,46 @@
     renderConcerts();
   }
 
+  // ---- GITHUB SETTINGS (saved in localStorage) ----
+  function loadGitHubSettings() {
+    const saved = JSON.parse(localStorage.getItem('kudla_github') || '{}');
+    if (saved.token) {
+      document.getElementById('githubToken').value = saved.token;
+      document.getElementById('tokenStatus').style.display = 'block';
+    }
+    if (saved.repo) document.getElementById('githubRepo').value = saved.repo;
+    if (saved.path) document.getElementById('githubPath').value = saved.path;
+  }
+
+  function saveGitHubSettings() {
+    const token = document.getElementById('githubToken').value;
+    const repo = document.getElementById('githubRepo').value;
+    const path = document.getElementById('githubPath').value;
+    localStorage.setItem('kudla_github', JSON.stringify({ token, repo, path }));
+    document.getElementById('tokenStatus').style.display = token ? 'block' : 'none';
+    showMessage('GitHub nastavení uloženo.', 'success');
+  }
+
+  function getGitHubConfig() {
+    const saved = JSON.parse(localStorage.getItem('kudla_github') || '{}');
+    return {
+      token: document.getElementById('githubToken').value || saved.token || '',
+      repo: document.getElementById('githubRepo').value || saved.repo || 'OKIUDLLA/Kudla-z-Brna',
+      path: document.getElementById('githubPath').value || saved.path || 'kudlazbrna-web/data'
+    };
+  }
+
+  // ---- QUICK PUBLISH (from concert tab) ----
+  async function quickPublish() {
+    const config = getGitHubConfig();
+    if (!config.token) {
+      showMessage('Nejdříve nastavte GitHub token v záložce <strong>Export</strong>.', 'error');
+      return;
+    }
+    await pushToGitHub();
+  }
+
+  // ---- OTHER CONTENT ACTIONS ----
   function saveFeaturedVideo() {
     videosData.featured = {
       youtubeId: document.getElementById('featuredVideoId').value,
@@ -481,11 +698,7 @@
     const id = document.getElementById('newVideoId').value;
     const title = document.getElementById('newVideoTitle').value;
     if (!title) { showMessage('Zadejte název videa.', 'error'); return; }
-    videosData.videos.push({
-      youtubeId: id,
-      title: title,
-      description: document.getElementById('newVideoDesc').value
-    });
+    videosData.videos.push({ youtubeId: id, title, description: document.getElementById('newVideoDesc').value });
     saveLocal('videos', videosData);
     renderVideos();
     ['newVideoId','newVideoTitle','newVideoDesc'].forEach(id => document.getElementById(id).value = '');
@@ -554,6 +767,50 @@
     saveLocal('bio', bioData);
   }
 
+  // ---- RENDER OTHER SECTIONS (unchanged) ----
+  function renderVideos() {
+    if (videosData.featured) {
+      document.getElementById('featuredVideoId').value = videosData.featured.youtubeId || '';
+      document.getElementById('featuredVideoTitle').value = videosData.featured.title || '';
+      document.getElementById('featuredVideoDesc').value = videosData.featured.description || '';
+    }
+    const listEl = document.getElementById('videosList');
+    listEl.innerHTML = videosData.videos.length ? videosData.videos.map((v, i) => `
+      <div class="admin-item">
+        <div><h4>${esc(v.title)}</h4><span class="item-meta">ID: ${v.youtubeId || '(prázdné)'} · ${esc(v.description)}</span></div>
+        <div class="admin-item-actions"><button class="delete" onclick="removeVideo(${i})"><i class="fas fa-trash"></i></button></div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná videa.</p>';
+  }
+
+  function renderGallery() {
+    const el = document.getElementById('photosList');
+    el.innerHTML = galleryData.photos.length ? galleryData.photos.map((p, i) => `
+      <div class="admin-item" style="display:block;padding:0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="item-meta">${esc(p.src)}</span>
+          <button class="delete" onclick="removePhoto(${i})" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.5rem;cursor:pointer;font-size:0.75rem;"><i class="fas fa-trash"></i></button>
+        </div>
+        <span style="color:var(--grey);font-size:0.8rem;">${esc(p.alt)}</span>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádné fotky v galerii.</p>';
+  }
+
+  function renderShop() {
+    const el = document.getElementById('albumsList');
+    el.innerHTML = shopData.albums.length ? shopData.albums.map((a, i) => `
+      <div class="admin-item">
+        <div><h4>${esc(a.title)}</h4><span class="item-meta">${a.price} Kč + ${a.shipping} Kč poštovné</span></div>
+        <div class="admin-item-actions"><button class="delete" onclick="removeAlbum(${i})"><i class="fas fa-trash"></i></button></div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná alba v shopu.</p>';
+    document.getElementById('shippingNote').value = shopData.shippingNote || '';
+  }
+
+  function renderBio() {
+    document.getElementById('bioHeadline').value = bioData.headline || '';
+    document.getElementById('bioShort').value = bioData.shortBio || '';
+    document.getElementById('bioLong').value = bioData.longBio || '';
+    document.getElementById('bioTags').value = (bioData.tags || []).join(', ');
+  }
+
   // ---- EXPORT ----
   function downloadJSON(name) {
     const dataMap = { concerts: concertsData, videos: videosData, gallery: galleryData, shop: shopData, bio: bioData };
@@ -573,11 +830,11 @@
 
   // ---- GITHUB PUSH ----
   async function pushToGitHub() {
-    const token = document.getElementById('githubToken').value;
-    const repo = document.getElementById('githubRepo').value;
-    const basePath = document.getElementById('githubPath').value;
+    const config = getGitHubConfig();
+    if (!config.token || !config.repo) { showMessage('Zadejte GitHub token a repozitář v záložce Export.', 'error'); return; }
 
-    if (!token || !repo) { showMessage('Zadejte GitHub token a repozitář.', 'error'); return; }
+    // Auto-save settings
+    localStorage.setItem('kudla_github', JSON.stringify(config));
 
     const files = {
       'concerts.json': concertsData,
@@ -587,38 +844,27 @@
       'bio.json': bioData
     };
 
-    showMessage('Nahrávám na GitHub...', 'success');
+    showMessage('<i class="fas fa-spinner fa-spin"></i> Nahrávám na GitHub...', 'success');
 
     for (const [filename, data] of Object.entries(files)) {
       try {
-        const path = basePath + '/' + filename;
+        const path = config.path + '/' + filename;
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
 
-        // Get current file SHA if exists
         let sha = '';
         try {
-          const existing = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-            headers: { 'Authorization': `token ${token}` }
+          const existing = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
+            headers: { 'Authorization': `token ${config.token}` }
           });
-          if (existing.ok) {
-            const fileData = await existing.json();
-            sha = fileData.sha;
-          }
+          if (existing.ok) { sha = (await existing.json()).sha; }
         } catch(e) {}
 
-        const body = {
-          message: `Aktualizace ${filename} z admin panelu`,
-          content: content,
-          branch: 'main'
-        };
+        const body = { message: `Aktualizace ${filename} z admin panelu`, content, branch: 'main' };
         if (sha) body.sha = sha;
 
-        const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+        const res = await fetch(`https://api.github.com/repos/${config.repo}/contents/${path}`, {
           method: 'PUT',
-          headers: {
-            'Authorization': `token ${token}`,
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Authorization': `token ${config.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
 
@@ -629,9 +875,11 @@
       }
     }
 
-    showMessage('Všechny soubory nahrány na GitHub! Web se aktualizuje do 1-2 minut.', 'success');
-    // Clear localStorage after successful push
+    // Success!
     ['concerts','videos','gallery','shop','bio'].forEach(k => localStorage.removeItem('kudla_' + k));
+    hasUnsavedChanges = false;
+    updatePublishBar();
+    showMessage('<i class="fas fa-check-circle"></i> Publikováno! Web se aktualizuje do 1-2 minut. <a href="https://kudlazbrna.netlify.app" target="_blank" style="color:var(--accent-bright);">Zobrazit web</a>', 'success');
   }
 
   // ---- INIT ----

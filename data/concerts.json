@@ -1,31 +1,47 @@
 {
   "upcoming": [
     {
+      "id": "2026-03-15-kabinet-muz",
       "date": "2026-03-15",
+      "time": "20:00",
       "title": "Jarní koncert — Kudla sólo",
-      "venue": "Kabinet Múz, Brno",
+      "venue": "Kabinet Múz",
+      "city": "Brno",
+      "type": "koncert",
       "ticketUrl": "",
       "note": ""
     },
     {
+      "id": "2026-04-22-sono-centrum",
       "date": "2026-04-22",
+      "time": "19:00",
       "title": "Hudební festival Brno",
-      "venue": "Sono Centrum, Brno",
+      "venue": "Sono Centrum",
+      "city": "Brno",
+      "type": "festival",
       "ticketUrl": "",
       "note": ""
     }
   ],
   "past": [
     {
+      "id": "2025-12-20-kabinet-muz",
       "date": "2025-12-20",
+      "time": "20:00",
       "title": "Vánoční koncert",
-      "venue": "Kabinet Múz, Brno",
+      "venue": "Kabinet Múz",
+      "city": "Brno",
+      "type": "koncert",
       "note": ""
     },
     {
+      "id": "2025-10-15-metro-music",
       "date": "2025-10-15",
+      "time": "21:00",
       "title": "Podzimní sólo",
-      "venue": "Metro Music Bar, Brno",
+      "venue": "Metro Music Bar",
+      "city": "Brno",
+      "type": "koncert",
       "note": ""
     }
   ]
