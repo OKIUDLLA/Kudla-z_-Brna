@@ -1,124 +1,119 @@
 # Audit webu — Kudla z Brna
 
-**Datum:** 5. března 2026
-**URL:** https://kudlazbrna.netlify.app
+**Datum:** 5. března 2026 (aktualizace)
+**Web:** https://kudlazbrna.netlify.app
 **Repozitář:** OKIUDLLA/Kudla-z_-Brna
 
 ---
 
 ## KRITICKÉ problémy
 
-### 1. Heslo adminu v plain textu
-- **`data/site.json`** obsahuje `"adminPassword": "kudla2026"` — kdokoli si může přečíst JSON soubor přímo z webu (`/data/site.json`)
-- **`admin.html`** řádek 278 — hardcoded fallback heslo `'kudla2026'`
-- **Riziko:** Kdokoli může získat přístup k admin panelu a pak s GitHub tokenem pushovat na repo
-- **Řešení:** Přesunout autentizaci na server-side (např. Netlify Functions + env variable), nebo alespoň odstranit heslo ze site.json a použít hash
+### 1. Galerie — rozbitá (nefunkční obrázky) ❌
+- `gallery.json` odkazuje na `photo1.jpg`, `photo2.jpg`, `photo3.jpg`
+- Skutečné soubory v `img/gallery/` se jmenují `foto-01.jpg` až `foto-09.jpg`
+- **Výsledek:** Foto stránka ukazuje jen broken image ikonky, žádné fotky se nenačtou
+- **Oprava:** Přepsat `gallery.json` s reálnými názvy souborů
 
-### 2. Nepushnuté commity — živý web je zastaralý
-- V lokálním repozitáři je **5 nepushnutých commitů** s klíčovými změnami (videa, bento layout, sociální sítě)
-- Na živém webu se zobrazuje "Video bude brzy k dispozici" místo skutečných videí
-- Netlify je potřeba připojit k novému repozitáři `Kudla-z_-Brna`
-- **Řešení:** Pushnout přes GitHub Desktop a přepojit Netlify
+### 2. Admin — hash hesla hardcoded ve zdrojáku
+- V `admin.html` (~řádek 396) je fallback hash přímo v kódu:
+  `if (fallbackHash === 'b3abc41143...')`
+- Kdokoliv si může přečíst zdroják a pokusit se heslo prolomit (rainbow table)
+- **Oprava:** Odstranit hardcoded fallback, spoléhat jen na `site.json`
+
+### 3. Admin — client-side autentizace snadno obejitelná
+- Autentizace je čistě v prohlížeči (`sessionStorage`)
+- Stačí v DevTools zadat `sessionStorage.setItem('kudla_admin','true')` a admin panel se otevře
+- **Poznámka:** U statického webu bez backendu je to očekávané omezení. Skutečná ochrana = GitHub token pro publikování.
 
 ---
 
 ## DŮLEŽITÉ problémy
 
-### 3. Portrétní fotka je placeholder
-- `img/kudla-portrait.jpg` existuje ale na živém webu zobrazuje "KUDLA PORTRAIT" text — je to placeholder, nikoli skutečná fotografie
-- Zobrazuje se na hlavní stránce v sekci "O mně"
-- **Řešení:** Nahradit skutečnou portrétní fotkou
+### 4. Sociální sítě — nekonzistentní URL
+- V HTML souborech (header, footer): `facebook.com/kudla.cz`, `youtube.com/@kudla4079`, `bandzone.cz/kudla`
+- V `site.json`: `facebook.com/kudlazbrna`, `youtube.com/@kudlazbrna`, `bandzone.cz/kudlazbrna`
+- **Oprava:** Ověřit správné URL a sjednotit všude
 
-### 4. Galerie — data nesouhlasí se soubory
-- `gallery.json` odkazuje na 3 fotky: `photo1.jpg`, `photo2.jpg`, `photo3.jpg`
-- Ve složce `img/gallery/` je ve skutečnosti 9 fotek: `foto-01.jpg` až `foto-09.jpg`
-- Žádná z referencí v JSON se neshoduje se skutečnými soubory!
-- **Řešení:** Aktualizovat `gallery.json` na `foto-01.jpg` až `foto-09.jpg`
-
-### 5. Chybí favicon
-- Žádná ze stránek nemá `<link rel="icon">` — prohlížeč zobrazuje výchozí ikonu
-- **Řešení:** Vytvořit favicon z loga a přidat do všech HTML souborů
-
-### 6. Social URL v site.json neodpovídají HTML
-- `site.json` má staré/špatné URL: `facebook.com/kudlazbrna`, `youtube.com/@kudlazbrna`, `bandzone.cz/kudlazbrna`
-- HTML soubory mají správné URL: `facebook.com/kudla.cz`, `youtube.com/@kudla4079`, `bandzone.cz/kudla`
-- Admin panel čte z site.json — pokud by se z něj generovaly odkazy, budou špatné
-- **Řešení:** Aktualizovat site.json na správné URL
-
-### 7. Chybí OG image
-- `index.html` má og:title a og:description, ale chybí `og:image`
-- Ostatní stránky nemají OG tagy vůbec
+### 5. Chybí og:image
+- Homepage má `og:title` a `og:description`, ale nemá `og:image`
 - Při sdílení na sociálních sítích se nezobrazí náhledový obrázek
-- **Řešení:** Přidat og:image na všechny stránky
+- **Oprava:** Přidat `<meta property="og:image" content="...">`
+
+### 6. Chybí favicon
+- Web nemá žádný favicon — v prohlížeči se zobrazuje výchozí ikona
+- **Oprava:** Vytvořit z loga a přidat `<link rel="icon">` do všech stránek
+
+### 7. GitHub token v localStorage
+- GitHub Personal Access Token se ukládá v `localStorage` v čitelné podobě
+- Při XSS útoku by mohl být kompromitován
+- **Poznámka:** Přijatelné riziko pro osobní web jednoho uživatele
 
 ### 8. Hero background obrázek nevyužitý
-- `img/hero-bg.jpg` (38 KB) existuje ale CSS hero-bg používá jen CSS gradient, ne tento obrázek
-- **Řešení:** Buď použít jako pozadí hero sekce, nebo smazat nepotřebný soubor
+- `img/hero-bg.jpg` (38 KB) existuje ale hero sekce používá jen CSS gradient
+- **Oprava:** Buď použít jako pozadí, nebo smazat
 
 ---
 
 ## MENŠÍ problémy
 
-### 9. Nekonzistentní načítání fontů
-- `index.html` a `koncerty.html` nemají Google Fonts `<link>` tagy (font se načte přes CSS @import)
-- Ostatní stránky (biografie, media, foto, shop, kontakt) mají navíc `<link>` tagy pro Google Fonts
-- CSS už má `@import url('https://fonts.googleapis.com/...')` — dvojité načítání na některých stránkách
-- **Řešení:** Sjednotit — buď všude `<link>` tagy (rychlejší), nebo jen CSS @import
+### 9. Žádné XSS ošetření na veřejném webu
+- `main.js` vkládá data z JSON přímo do HTML bez escapování
+- Riziko nízké (data jsou z vlastních JSON), admin panel má `esc()` funkci — to je správně
 
-### 10. Admin panel — XSS potenciál
-- V admin.html se data z inputů vkládají přímo do HTML přes template literals bez escapování
-- Např. `<h4>${c.title}</h4>` — pokud by někdo zadal `<script>` tag jako název koncertu, spustí se
-- Riziko je nižší protože data zadává sám admin, ale stále je to špatná praxe
-- **Řešení:** Escapovat HTML entity v renderovacích funkcích
+### 10. Chybí robots.txt a sitemap.xml
+- Pomohlo by SEO a indexaci vyhledávači
 
-### 11. Chybějící `lang` atribut v admin.html
-- admin.html nemá `<html lang="cs">` — jen `<html>`... vlastně má, zkontroloval jsem znovu a je to OK
+### 11. Nekonzistentní preconnect linky
+- Některé stránky mají preconnect pro Google Fonts, jiné ne
 
-### 12. CSS — nevalidní hodnota u site-logo hover
-- Řádek 95: `.site-logo:hover img { drop-shadow(0 0 8px rgba(56,182,255,0.4)); }` — chybí `filter:`
-- Mělo by být: `filter: drop-shadow(...)`
-- **Řešení:** Opravit na `filter: drop-shadow(...)`
-
-### 13. Koncertní data — ukázkové koncerty
-- `concerts.json` obsahuje fiktivní koncerty ("Jarní koncert", "Hudební festival Brno") — potřeba nahradit skutečnými daty
-- **Řešení:** Kudla musí zadat reálné koncerty přes admin panel
+### 12. Koncertní data — ukázkové koncerty
+- `concerts.json` obsahuje demo koncerty — Kudla musí zadat reálné přes admin
 
 ---
 
-## DOPORUČENÍ (nice-to-have)
+## CO FUNGUJE DOBŘE ✅
 
-### 14. Přidat structured data (JSON-LD)
-- Schema.org markup pro MusicGroup by pomohl ve vyhledávačích
-- Event schema pro koncerty by umožnila zobrazení v Google Events
-
-### 15. Přidat sitemap.xml a robots.txt
-- Chybí obě pro lepší indexaci vyhledávači
-
-### 16. Optimalizace SVG loga
-- `logo.svg` má 95 KB — velmi velký pro SVG soubor
-- Lze optimalizovat pomocí SVGO (typicky 50-80% úspora)
-
-### 17. Přidat lazy loading na více obrázků
-- Portrét na hlavní stránce nemá `loading="lazy"` (ale je above the fold, takže ok)
-- Gallery items mají lazy loading — OK
-
-### 18. Přidat preload pro hero logo
-- Hero logo je kritický LCP element — `<link rel="preload" href="img/logo.svg" as="image">` by zrychlil rendering
+- **Hero sekce** — logo, animace, CTA tlačítka
+- **Video bento** — 5 videí v bento layoutu, všechna klikatelná a přehrávatelná
+- **Koncertní sekce homepage** — featured karta s countdown ("Za 10 dní"), type tag, čas
+- **Koncerty.html** — nadcházející s badge, archiv seskupený po rocích
+- **Admin přihlášení** — jméno + heslo, SHA-256 hash (opraveno z plain textu)
+- **Admin koncerty** — přidání/editace/smazání, vizuální karty s type badges
+- **Admin účet** — záložka pro změnu přihlašovacích údajů
+- **Responsive design** — mobil i tablet v pořádku
+- **Shop** — alba s cenou a objednávkovým mailto
+- **Biografie, Kontakt** — v pořádku
+- **CSS** — čistý, organizovaný, opravený `filter: drop-shadow()` bug
 
 ---
 
-## Souhrn
+## SOUBORY
 
-| Kategorie | Počet |
-|-----------|-------|
-| Kritické | 2 |
-| Důležité | 6 |
-| Menší | 4 |
-| Doporučení | 5 |
+| Soubor | Stav | Poznámka |
+|--------|------|----------|
+| index.html | ✅ | Homepage |
+| biografie.html | ✅ | Bio stránka |
+| media.html | ✅ | Video stránka |
+| koncerty.html | ✅ | Koncerty |
+| foto.html | ✅ | Galerie (ale gallery.json rozbitý) |
+| shop.html | ✅ | Obchod |
+| kontakt.html | ✅ | Kontakt |
+| admin.html | ⚠️ | Funkční, bezpečnostní omezení viz výše |
+| css/style.css | ✅ | ~550 řádků, responsive, nové koncertní styly |
+| js/main.js | ✅ | 464 řádků, koncertní karty + countdown |
+| data/concerts.json | ✅ | Rozšířený formát (id, time, city, type) |
+| data/videos.json | ✅ | 1 featured + 12 videí |
+| data/gallery.json | ❌ | Špatné názvy souborů! |
+| data/shop.json | ✅ | 2 alba |
+| data/bio.json | ✅ | |
+| data/site.json | ✅ | Hash hesla místo plain textu |
 
-**Nejnaléhavější kroky:**
-1. Pushnout 5 commitů přes GitHub Desktop
-2. Připojit Netlify k novému repozitáři
-3. Opravit gallery.json (foto-01 až foto-09)
-4. Aktualizovat site.json (správné social URL + řešit heslo)
-5. Nahradit placeholder portrét skutečnou fotkou
+---
+
+## NEJNALÉHAVĚJŠÍ KROKY
+
+1. **Opravit gallery.json** — přepsat na `foto-01.jpg` až `foto-09.jpg`
+2. **Odstranit hardcoded hash** z admin.html fallbacku
+3. **Sjednotit social URL** — ověřit správné profily
+4. **Přidat favicon a og:image** — pro lepší branding
+5. **Pushnout všechny změny** přes GitHub Desktop

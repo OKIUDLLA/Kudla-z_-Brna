@@ -1,7 +1,13 @@
 {
   "photos": [
-    { "src": "img/gallery/photo1.jpg", "alt": "Koncert" },
-    { "src": "img/gallery/photo2.jpg", "alt": "Na pódiu" },
-    { "src": "img/gallery/photo3.jpg", "alt": "Festival" }
+    { "src": "img/gallery/foto-01.jpg", "alt": "Kudla z Brna — koncert" },
+    { "src": "img/gallery/foto-02.jpg", "alt": "Kudla z Brna — na pódiu" },
+    { "src": "img/gallery/foto-03.jpg", "alt": "Kudla z Brna — festival" },
+    { "src": "img/gallery/foto-04.jpg", "alt": "Kudla z Brna — živě" },
+    { "src": "img/gallery/foto-05.jpg", "alt": "Kudla z Brna — kytara" },
+    { "src": "img/gallery/foto-06.jpg", "alt": "Kudla z Brna — vystoupení" },
+    { "src": "img/gallery/foto-07.jpg", "alt": "Kudla z Brna — looper" },
+    { "src": "img/gallery/foto-08.jpg", "alt": "Kudla z Brna — koncertní fotografie" },
+    { "src": "img/gallery/foto-09.jpg", "alt": "Kudla z Brna — hudba naživo" }
   ]
 }

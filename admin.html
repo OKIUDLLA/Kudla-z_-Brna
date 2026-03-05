@@ -6,6 +6,8 @@
   <title>Správa webu — Kudla z Brna</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
   <style>
     /* Admin-specific overrides */
@@ -413,13 +415,8 @@
         document.getElementById('loginError').style.display = 'block';
       }
     } catch(e) {
-      // Fallback if site.json unavailable
-      const fallbackHash = await sha256(user + ':' + pwd);
-      if (fallbackHash === 'b3abc41143ced92bc70ffdfb50cafd16c53baf041a0615ceb2cb0a45fc93a6b2') {
-        sessionStorage.setItem('kudla_admin','true'); showAdmin();
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
+      // site.json unavailable — cannot authenticate
+      document.getElementById('loginError').style.display = 'block';
     }
   });
 
