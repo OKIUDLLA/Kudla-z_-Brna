@@ -2,6 +2,14 @@
    KUDLA Z BRNA — v2 JavaScript
    Parallax, scroll reveal, lightbox, nav
    ============================================ */
+// XSS sanitizer — escape HTML entities in user/JSON data
+function esc(str) {
+  if (!str) return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initMobileNav();
@@ -9,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initLightbox();
   setActiveNav();
+  initScrollTop();
+  injectSkeletons();
   initDataLoading();
 });
 
@@ -36,6 +46,7 @@ function initMobileNav() {
 function initParallax() {
   const heroBg = document.querySelector('.hero-bg');
   if (!heroBg) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (!ticking) {
@@ -76,7 +87,9 @@ function initLightbox() {
     const itemImg = item.querySelector('img');
     if (itemImg) {
       images.push(itemImg.dataset.full || itemImg.src);
-      item.addEventListener('click', () => { current = i; show(current); lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; });
+      const openLB = () => { current = i; show(current); lightbox.classList.add('active'); document.body.style.overflow = 'hidden'; };
+      item.addEventListener('click', openLB);
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLB(); } });
     }
   });
   function show(idx) { if (images[idx]) img.src = images[idx]; }
@@ -97,7 +110,7 @@ function setActiveNav() {
   const page = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.main-nav a').forEach(a => {
     const href = a.getAttribute('href');
-    if (href === page || (page === '' && href === 'index.html')) a.classList.add('active');
+    if (href === page || (page === '' && href === 'index.html')) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
   });
 }
 
@@ -105,15 +118,18 @@ function setActiveNav() {
 // DATA LOADING & RENDERING
 // ============================================
 
-async function loadJSON(path) {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error(`Failed to load ${path}`);
-    return await res.json();
-  } catch (e) {
-    console.warn(`Could not load ${path}:`, e.message);
-    return null;
+async function loadJSON(path, retries = 1) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      console.warn(`Could not load ${path} (attempt ${i + 1}):`, e.message);
+      if (i < retries) await new Promise(r => setTimeout(r, 1000));
+    }
   }
+  return null;
 }
 
 // Format date from ISO string to Czech format
@@ -133,10 +149,10 @@ function isPast(dateStr) {
   return new Date(dateStr) < new Date();
 }
 
-// Concert venue string (handles new city field)
+// Concert venue string (handles new city field) — escaped
 function concertVenueStr(c) {
-  if (c.city) return c.venue + ', ' + c.city;
-  return c.venue;
+  if (c.city) return esc(c.venue) + ', ' + esc(c.city);
+  return esc(c.venue);
 }
 
 // Countdown text for upcoming concert
@@ -166,7 +182,7 @@ async function loadConcerts() {
   if (!container) return;
 
   const data = await loadJSON('data/concerts.json');
-  if (!data) { container.innerHTML = '<p style="color:var(--grey);text-align:center;">Žádné koncerty k zobrazení.</p>'; return; }
+  if (!data) { container.innerHTML = '<p style="color:var(--grey);text-align:center;padding:2rem 0;">Koncerty se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>'; return; }
   window._concertsData = data;
 
   if (!data.upcoming || data.upcoming.length === 0) {
@@ -193,9 +209,9 @@ async function loadConcerts() {
           ${next.type ? `<span class="concert-type-tag ${next.type}"><i class="fas ${TYPE_ICONS[next.type] || 'fa-guitar'}"></i> ${next.type === 'koncert' ? 'Koncert' : next.type === 'festival' ? 'Festival' : next.type === 'moderovani' ? 'Moderování' : 'Akce'}</span>` : ''}
           ${next.time ? `<span class="concert-time"><i class="fas fa-clock"></i> ${next.time}</span>` : ''}
         </div>
-        <h3 class="next-concert-title">${next.title}</h3>
+        <h3 class="next-concert-title">${esc(next.title)}</h3>
         <p class="next-concert-venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(next)}</p>
-        ${next.note ? `<p class="next-concert-note">${next.note}</p>` : ''}
+        ${next.note ? `<p class="next-concert-note">${esc(next.note)}</p>` : ''}
         <div class="next-concert-actions">
           ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
           ${nextHasDetail ? `<span class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openConcertDetail('${next.id}')"><i class="fas fa-info-circle"></i> Detail</span>` : ''}
@@ -216,7 +232,7 @@ async function loadConcerts() {
             <span class="month-year">${rfd.monthYear}</span>
           </div>
           <div class="concert-info">
-            <h3>${c.title}</h3>
+            <h3>${esc(c.title)}</h3>
             <p class="venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}</p>
           </div>
           <div class="concert-link">
@@ -257,12 +273,12 @@ async function loadConcertsFull() {
             <span class="month-year">${fd.monthYear}</span>
           </div>
           <div class="concert-info">
-            <h3>${c.title}</h3>
+            <h3>${esc(c.title)}</h3>
             <p class="venue">
               <i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}
-              ${c.time ? ` <span style="margin-left:0.5rem;"><i class="fas fa-clock"></i> ${c.time}</span>` : ''}
+              ${c.time ? ` <span style="margin-left:0.5rem;"><i class="fas fa-clock"></i> ${esc(c.time)}</span>` : ''}
             </p>
-            ${c.note ? `<p class="venue">${c.note}</p>` : ''}
+            ${c.note ? `<p class="venue">${esc(c.note)}</p>` : ''}
             ${cd ? `<span class="concert-countdown-badge">${cd}</span>` : ''}
           </div>
           <div class="concert-link">
@@ -295,7 +311,7 @@ async function loadConcertsFull() {
               <span class="month-year">${fd.monthYear}</span>
             </div>
             <div class="concert-info">
-              <h3>${c.title}</h3>
+              <h3>${esc(c.title)}</h3>
               <p class="venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(c)}</p>
             </div>
           </div>`;
@@ -348,8 +364,8 @@ async function loadVideoTeaser() {
         ${playBtn}
         <div class="bento-main-info">
           <span class="bento-rank">#1</span>
-          <h3>${big.title}</h3>
-          <span class="video-views"><i class="fas fa-eye"></i> ${big.description || big.views || ''}</span>
+          <h3>${esc(big.title)}</h3>
+          <span class="video-views"><i class="fas fa-eye"></i> ${esc(big.description || big.views || '')}</span>
         </div>
       </div>
     </div>
@@ -360,8 +376,8 @@ async function loadVideoTeaser() {
           ${playBtn}
           <div class="bento-item-info">
             <span class="bento-rank">#${i + 2}</span>
-            <h3>${v.title}</h3>
-            ${v.views ? `<span class="video-views"><i class="fas fa-eye"></i> ${v.views}</span>` : ''}
+            <h3>${esc(v.title)}</h3>
+            ${v.views ? `<span class="video-views"><i class="fas fa-eye"></i> ${esc(v.views)}</span>` : ''}
           </div>
         </div>`).join('')}
     </div>`;
@@ -383,8 +399,8 @@ async function loadVideos() {
           <svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
         </button>
         <div class="video-thumb-info">
-          <h3>${f.title}</h3>
-          <span class="video-views"><i class="fas fa-eye"></i> ${f.description}</span>
+          <h3>${esc(f.title)}</h3>
+          <span class="video-views"><i class="fas fa-eye"></i> ${esc(f.description)}</span>
         </div>
       </div>`;
   }
@@ -402,8 +418,8 @@ async function loadVideos() {
             ${v.views ? `<span class="video-badge"><i class="fas fa-eye"></i> ${v.views}</span>` : ''}
           </div>
           <div class="video-card-info">
-            <h3>${v.title}</h3>
-            <p>${v.description}</p>
+            <h3>${esc(v.title)}</h3>
+            <p>${esc(v.description)}</p>
           </div>
         </div>`).join('');
     }
@@ -421,9 +437,9 @@ async function loadGallery() {
     return;
   }
 
-  grid.innerHTML = data.photos.map(p => `
-    <div class="gallery-item">
-      <img src="${p.src}" alt="${p.alt}" loading="lazy">
+  grid.innerHTML = data.photos.map((p, i) => `
+    <div class="gallery-item" role="button" tabindex="0" aria-label="Zobrazit fotografii ${i + 1}">
+      <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" onerror="this.parentElement.style.display='none'">
     </div>`).join('');
 
   // Re-init lightbox after dynamic load
@@ -447,8 +463,8 @@ async function loadShop() {
           <img src="${a.image}" alt="${a.title}" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:var(--grey);\\'><i class=\\'fas fa-compact-disc\\' style=\\'font-size:3rem;\\'></i></div>'">
         </div>
         <div class="album-info">
-          <h3>${a.title}</h3>
-          <p class="album-desc">${a.description}</p>
+          <h3>${esc(a.title)}</h3>
+          <p class="album-desc">${esc(a.description)}</p>
           <p class="album-price">${a.price} Kč <span class="album-shipping">+ ${a.shipping} Kč poštovné</span></p>
           <button class="btn btn-primary" onclick="openOrderForm('${a.title}', ${i})">
             <i class="fas fa-shopping-cart"></i> Objednat
@@ -587,13 +603,13 @@ function openConcertDetail(concertId) {
 
   let linksHtml = '';
   if (c.venueUrl) {
-    linksHtml += `<a href="${c.venueUrl}" class="concert-detail-link" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Web místa konání</a>`;
+    linksHtml += `<a href="${c.venueUrl}" class="concert-detail-link" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe"></i> Web místa konání</a>`;
   }
   if (c.ticketUrl) {
-    linksHtml += `<a href="${c.ticketUrl}" class="concert-detail-link ticket" target="_blank" rel="noopener"><i class="fas fa-ticket-alt"></i> Vstupenky</a>`;
+    linksHtml += `<a href="${c.ticketUrl}" class="concert-detail-link ticket" target="_blank" rel="noopener noreferrer"><i class="fas fa-ticket-alt"></i> Vstupenky</a>`;
   }
   if (c.eventUrl) {
-    linksHtml += `<a href="${c.eventUrl}" class="concert-detail-link event" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Událost na Facebooku</a>`;
+    linksHtml += `<a href="${c.eventUrl}" class="concert-detail-link event" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> Událost na Facebooku</a>`;
   }
 
   const modal = document.createElement('div');
@@ -609,23 +625,23 @@ function openConcertDetail(concertId) {
         ${cd ? `<span class="concert-countdown-badge">${cd}</span>` : ''}
       </div>
 
-      <h3 class="concert-detail-title">${c.title}</h3>
+      <h3 class="concert-detail-title">${esc(c.title)}</h3>
 
       <div class="concert-detail-meta">
-        <a href="${calUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener" title="Přidat do Google Kalendáře">
+        <a href="${calUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener noreferrer" title="Přidat do Google Kalendáře">
           <i class="fas fa-calendar-alt"></i>
           <span>${dayName}, ${dateStr}${c.time ? ' — ' + c.time : ''}</span>
           <i class="fas fa-plus-circle concert-detail-action-icon"></i>
         </a>
-        <a href="${mapsUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener" title="Otevřít v Mapách">
+        <a href="${mapsUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener noreferrer" title="Otevřít v Mapách">
           <i class="fas fa-map-marker-alt"></i>
           <span>${c.venue ? concertVenueStr(c) : c.city}</span>
           <i class="fas fa-external-link-alt concert-detail-action-icon"></i>
         </a>
-        ${c.note ? `<div class="concert-detail-row"><i class="fas fa-info-circle"></i><span>${c.note}</span></div>` : ''}
+        ${c.note ? `<div class="concert-detail-row"><i class="fas fa-info-circle"></i><span>${esc(c.note)}</span></div>` : ''}
       </div>
 
-      ${c.description ? `<p class="concert-detail-desc">${c.description}</p>` : ''}
+      ${c.description ? `<p class="concert-detail-desc">${esc(c.description)}</p>` : ''}
 
       ${linksHtml ? `<div class="concert-detail-links">${linksHtml}</div>` : ''}
     </div>`;
@@ -669,6 +685,90 @@ function injectConcertJsonLd(data) {
   document.head.appendChild(script);
 }
 
+// BREADCRUMB JSON-LD for subpages
+function injectBreadcrumb() {
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  if (page === 'index.html' || page === '' || page === '404.html' || page === 'admin.html') return;
+
+  const names = {
+    'biografie.html': 'Biografie',
+    'media.html': 'Media',
+    'koncerty.html': 'Koncerty',
+    'foto.html': 'Foto',
+    'shop.html': 'Shop',
+    'kontakt.html': 'Kontakt'
+  };
+  const name = names[page];
+  if (!name) return;
+
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Kudla z Brna", "item": "https://kudlazbrna.netlify.app/" },
+      { "@type": "ListItem", "position": 2, "name": name, "item": "https://kudlazbrna.netlify.app/" + page }
+    ]
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(breadcrumb);
+  document.head.appendChild(script);
+}
+
+// SCROLL TO TOP button
+function initScrollTop() {
+  const btn = document.createElement('button');
+  btn.className = 'scroll-top';
+  btn.setAttribute('aria-label', 'Zpět nahoru');
+  btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+  document.body.appendChild(btn);
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        btn.classList.toggle('visible', window.scrollY > 400);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// LOADING SKELETONS — show placeholders while data loads
+function injectSkeletons() {
+  const concertsList = document.getElementById('concerts-list');
+  if (concertsList && !concertsList.children.length) {
+    concertsList.innerHTML = `
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card" style="height:80px"></div>
+      <div class="skeleton skeleton-card" style="height:80px"></div>`;
+  }
+
+  const concertsUpcoming = document.getElementById('concerts-upcoming');
+  if (concertsUpcoming && !concertsUpcoming.children.length) {
+    let s = '';
+    for (let i = 0; i < 5; i++) s += '<div class="skeleton skeleton-card" style="height:80px"></div>';
+    concertsUpcoming.innerHTML = s;
+  }
+
+  const bento = document.getElementById('video-bento');
+  if (bento && !bento.children.length) {
+    bento.innerHTML = '<div class="skeleton skeleton-video"></div>';
+  }
+
+  const galleryGrid = document.getElementById('gallery-grid');
+  if (galleryGrid && !galleryGrid.children.length) {
+    let s = '';
+    for (let i = 0; i < 6; i++) s += '<div class="skeleton" style="aspect-ratio:1;border-radius:8px"></div>';
+    galleryGrid.innerHTML = s;
+  }
+}
+
 // Initialize data loading on page load
 function initDataLoading() {
   loadConcerts();
@@ -677,4 +777,5 @@ function initDataLoading() {
   loadVideos();
   loadGallery();
   loadShop();
+  injectBreadcrumb();
 }

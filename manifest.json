@@ -1,0 +1,15 @@
+{
+  "name": "Kudla z Brna",
+  "short_name": "Kudla",
+  "description": "Brněnský písničkář, textař, moravský hlas rádia BEAT.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "img/favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "lang": "cs",
+  "categories": ["music", "entertainment"]
+}

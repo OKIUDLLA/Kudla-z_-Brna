@@ -161,13 +161,13 @@
       "date": "2026-08-20",
       "time": "",
       "title": "Koncert",
-      "venue": "",
-      "city": "Moravská Třebová",
+      "venue": "Kulturn\u00ed st\u0159edisko",
+      "city": "Moravsk\u00e1 T\u0159ebov\u00e1",
       "type": "koncert",
       "ticketUrl": "",
       "note": "",
-      "venueUrl": "",
-      "description": ""
+      "venueUrl": "https://www.ksmt.cz/",
+      "description": "Kulturn\u00ed st\u0159edisko Moravsk\u00e1 T\u0159ebov\u00e1 \u2014 hlavn\u00ed centrum pro koncerty, divadlo a kulturn\u00ed akce ve m\u011bst\u011b."
     },
     {
       "id": "2026-09-12-brno-u-sosny",

@@ -3,21 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koncerty — Kudla z Brna</title>
-  <meta name="description" content="Nadcházející koncerty a vystoupení Kudly z Brna.">
-  <meta property="og:title" content="Koncerty — Kudla z Brna">
-  <meta property="og:description" content="Kalendář koncertů Kudly z Brna.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://kudlazbrna.netlify.app/koncerty">
-  <meta property="og:image" content="https://kudlazbrna.netlify.app/img/og-image.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:locale" content="cs_CZ">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Koncerty — Kudla z Brna">
-  <meta name="twitter:description" content="Kalendář koncertů Kudly z Brna.">
-  <meta name="twitter:image" content="https://kudlazbrna.netlify.app/img/og-image.jpg">
-  <link rel="canonical" href="https://kudlazbrna.netlify.app/koncerty.html">
+  <title>404 — Stránka nenalezena — Kudla z Brna</title>
+  <meta name="description" content="Stránka nebyla nalezena.">
+  <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -26,18 +14,55 @@
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: var(--dark);
+    }
+    .error-content { max-width: 520px; }
+    .error-code {
+      font-family: var(--font-display);
+      font-size: clamp(6rem, 15vw, 10rem);
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .error-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: var(--white);
+    }
+    .error-text {
+      color: var(--grey-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .error-links {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link sr-only">Přeskočit na obsah</a>
-
-  <header class="site-header">
+  <header class="site-header scrolled">
     <div class="header-inner">
-      <a href="index.html" class="site-logo">
-        <img src="img/logo.svg" alt="Kudla z Brna">
-      </a>
+      <a href="index.html" class="site-logo"><img src="img/logo.svg" alt="Kudla z Brna"></a>
       <nav class="main-nav">
         <ul>
           <li><a href="index.html">Úvod</a></li>
@@ -58,49 +83,29 @@
     </div>
   </header>
   <div class="nav-overlay"></div>
-  <main id="main-content">
 
-  <section class="page-hero">
-    <div class="container">
-      <h1>Koncerty</h1>
-      <p class="subtitle">Kde mě můžete vidět a slyšet naživo</p>
-    </div>
-  </section>
-
-  <!-- UPCOMING -->
-  <section class="concerts-section">
-    <div class="container">
-      <div class="reveal">
-        <span class="section-label">Naživo</span>
-        <h2 class="section-title">Nadcházející <em>vystoupení</em></h2>
-      </div>
-      <div class="concerts-list">
-        <div id="concerts-upcoming"></div>
+  <main class="error-page">
+    <div class="error-content">
+      <div class="error-code">404</div>
+      <h1 class="error-title">Tady nic nehraje</h1>
+      <p class="error-text">
+        Tahle stránka se asi ztratila někde mezi Brnem a Potůčky.
+        Ale nevadí — koncerty, videa i všechno ostatní najdete na hlavní stránce.
+      </p>
+      <div class="error-links">
+        <a href="index.html" class="btn btn-primary">
+          <i class="fas fa-home"></i> Zpět na úvod
+        </a>
+        <a href="koncerty.html" class="btn btn-ghost">
+          <i class="fas fa-calendar-alt"></i> Koncerty
+        </a>
       </div>
     </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- RECENT PAST -->
-  <section class="concerts-section">
-    <div class="container">
-      <div class="text-center mt-3">
-        <span class="section-label">Archiv</span>
-        <h2 class="section-title">Odehrané <em>koncerty</em></h2>
-      </div>
-      <div class="concerts-list">
-        <div id="concerts-past"></div>
-      </div>
-    </div>
-  </section>
-
   </main>
+
   <footer class="site-footer">
     <div class="footer-inner">
-      <a href="index.html" class="footer-logo">
-        <img src="img/logo.svg" alt="Kudla z Brna">
-      </a>
+      <a href="index.html" class="footer-logo"><img src="img/logo.svg" alt="Kudla z Brna"></a>
       <div class="footer-social">
         <a href="https://www.facebook.com/kudla.cz/?locale=cs_CZ" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.youtube.com/@kudla4079" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
