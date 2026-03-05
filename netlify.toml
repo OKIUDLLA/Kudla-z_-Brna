@@ -3,7 +3,7 @@
 
 [[plugins]]
   package = "netlify-plugin-minify-html"
-  [plugins.inputs]
+  [plugins.inputs.minifierOptions]
     minifyCSS = true
     minifyJS = true
     removeComments = true
