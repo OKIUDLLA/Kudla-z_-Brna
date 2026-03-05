@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="css/style.css?v=2.1">
+  <link rel="stylesheet" href="css/style.css?v=2.3">
   <style>
     /* Admin-specific overrides */
     .admin-publish-bar {
@@ -97,7 +97,9 @@
       <h1>Správa webu</h1>
       <p>Zadejte přihlašovací údaje pro přístup ke správě obsahu.</p>
       <div class="admin-form">
+        <label for="adminUsername" class="sr-only">Uživatelské jméno</label>
         <input type="text" id="adminUsername" placeholder="Uživatelské jméno" style="text-align:center;" autocomplete="username">
+        <label for="adminPassword" class="sr-only">Heslo</label>
         <input type="password" id="adminPassword" placeholder="Heslo" style="text-align:center;margin-top:0.5rem;" autocomplete="current-password">
         <button id="loginBtn" class="admin-btn" style="width:100%;justify-content:center;margin-top:0.75rem;">
           <i class="fas fa-lock-open"></i> Přihlásit se
@@ -589,7 +591,7 @@
           <span class="month">${month} ${d.getFullYear()}</span>
         </div>
         <div class="concert-card-info">
-          <h4>${esc(c.title)}</h4>
+          <h3 class="admin-item-title">${esc(c.title)}</h3>
           <div class="meta">
             <span class="concert-type-badge ${typeClass}">${TYPE_LABELS[typeClass] || 'Koncert'}</span>
             <span><i class="fas fa-clock"></i> ${c.time || '20:00'}</span>
@@ -847,7 +849,7 @@
     const listEl = document.getElementById('videosList');
     listEl.innerHTML = videosData.videos.length ? videosData.videos.map((v, i) => `
       <div class="admin-item">
-        <div><h4>${esc(v.title)}</h4><span class="item-meta">ID: ${v.youtubeId || '(prázdné)'} · ${esc(v.description)}</span></div>
+        <div><h3 class="admin-item-title">${esc(v.title)}</h3><span class="item-meta">ID: ${v.youtubeId || '(prázdné)'} · ${esc(v.description)}</span></div>
         <div class="admin-item-actions"><button class="delete" onclick="removeVideo(${i})"><i class="fas fa-trash"></i></button></div>
       </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná videa.</p>';
   }
@@ -868,7 +870,7 @@
     const el = document.getElementById('albumsList');
     el.innerHTML = shopData.albums.length ? shopData.albums.map((a, i) => `
       <div class="admin-item">
-        <div><h4>${esc(a.title)}</h4><span class="item-meta">${a.price} Kč + ${a.shipping} Kč poštovné</span></div>
+        <div><h3 class="admin-item-title">${esc(a.title)}</h3><span class="item-meta">${a.price} Kč + ${a.shipping} Kč poštovné</span></div>
         <div class="admin-item-actions"><button class="delete" onclick="removeAlbum(${i})"><i class="fas fa-trash"></i></button></div>
       </div>`).join('') : '<p style="color:var(--grey);padding:1rem;">Žádná alba v shopu.</p>';
     document.getElementById('shippingNote').value = shopData.shippingNote || '';

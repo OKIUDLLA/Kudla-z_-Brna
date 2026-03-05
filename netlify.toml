@@ -1,6 +1,16 @@
 [build]
   publish = "."
 
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+  [plugins.inputs]
+    minifyCSS = true
+    minifyJS = true
+    removeComments = true
+    collapseWhitespace = true
+    sortAttributes = true
+    sortClassName = true
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -10,6 +20,7 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     X-XSS-Protection = "1; mode=block"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://img.youtube.com data:; frame-src https://www.youtube.com; connect-src 'self'"
 
 [[redirects]]
   from = "/*"

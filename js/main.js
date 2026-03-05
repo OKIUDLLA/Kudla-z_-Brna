@@ -9,6 +9,15 @@ function esc(str) {
   d.textContent = str;
   return d.innerHTML;
 }
+// Escape for safe use inside HTML attribute values (onclick, etc.)
+function escAttr(str) {
+  if (!str) return '';
+  return str.replace(/[&"'<>]/g, c => ({'&':'&amp;','"':'&quot;',"'":'&#39;','<':'&lt;','>':'&gt;'}[c]));
+}
+// Validate YouTube ID (11 chars, alphanumeric + dash/underscore)
+function isValidYtId(id) {
+  return typeof id === 'string' && /^[a-zA-Z0-9_-]{11}$/.test(id);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
@@ -20,7 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollTop();
   injectSkeletons();
   initDataLoading();
+  registerSW();
 });
+
+// Service Worker registration
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+}
 
 function initHeader() {
   const header = document.querySelector('.site-header');
@@ -35,8 +52,10 @@ function initMobileNav() {
   const nav = document.querySelector('.main-nav');
   const overlay = document.querySelector('.nav-overlay');
   if (!toggle || !nav) return;
-  const close = () => { toggle.classList.remove('active'); nav.classList.remove('open'); overlay && overlay.classList.remove('active'); document.body.style.overflow = ''; };
-  const open = () => { toggle.classList.add('active'); nav.classList.add('open'); overlay && overlay.classList.add('active'); document.body.style.overflow = 'hidden'; };
+  toggle.setAttribute('aria-expanded', 'false');
+  toggle.setAttribute('aria-controls', 'main-nav');
+  const close = () => { toggle.classList.remove('active'); nav.classList.remove('open'); overlay && overlay.classList.remove('active'); document.body.style.overflow = ''; toggle.setAttribute('aria-expanded', 'false'); };
+  const open = () => { toggle.classList.add('active'); nav.classList.add('open'); overlay && overlay.classList.add('active'); document.body.style.overflow = 'hidden'; toggle.setAttribute('aria-expanded', 'true'); };
   toggle.addEventListener('click', () => nav.classList.contains('open') ? close() : open());
   overlay && overlay.addEventListener('click', close);
   nav.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
@@ -196,7 +215,7 @@ async function loadConcerts() {
   if (!container) return;
 
   const data = await loadJSON('data/concerts.json');
-  if (!data) { container.innerHTML = '<p style="color:var(--grey);text-align:center;padding:2rem 0;">Koncerty se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>'; return; }
+  if (!data) { container.innerHTML = '<p role="alert" style="color:var(--grey);text-align:center;padding:2rem 0;">Koncerty se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>'; return; }
   window._concertsData = data;
 
   if (!data.upcoming || data.upcoming.length === 0) {
@@ -212,7 +231,7 @@ async function loadConcerts() {
 
   const nextHasDetail = next.description || next.venueUrl || next.eventUrl;
   let html = `
-    <div class="next-concert-card reveal${nextHasDetail ? ' clickable' : ''}" ${nextHasDetail ? `onclick="openConcertDetail('${next.id}')"` : ''} style="cursor:${nextHasDetail ? 'pointer' : 'default'}">
+    <div class="next-concert-card reveal${nextHasDetail ? ' clickable' : ''}" ${nextHasDetail ? `onclick="openConcertDetail('${escAttr(next.id)}')"` : ''} style="cursor:${nextHasDetail ? 'pointer' : 'default'}">
       <div class="next-concert-date">
         <span class="next-day">${fd.day}</span>
         <span class="next-month">${MONTHS_FULL[d.getMonth()]}</span>
@@ -227,8 +246,8 @@ async function loadConcerts() {
         <p class="next-concert-venue"><i class="fas fa-map-marker-alt"></i> ${concertVenueStr(next)}</p>
         ${next.note ? `<p class="next-concert-note">${esc(next.note)}</p>` : ''}
         <div class="next-concert-actions">
-          ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank" onclick="event.stopPropagation()"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
-          ${nextHasDetail ? `<span class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openConcertDetail('${next.id}')"><i class="fas fa-info-circle"></i> Detail</span>` : ''}
+          ${next.ticketUrl ? `<a href="${next.ticketUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"><i class="fas fa-ticket-alt"></i> Vstupenky</a>` : ''}
+          ${nextHasDetail ? `<span class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openConcertDetail('${escAttr(next.id)}')"><i class="fas fa-info-circle"></i> Detail</span>` : ''}
         </div>
       </div>
     </div>`;
@@ -240,7 +259,7 @@ async function loadConcerts() {
       const rfd = formatDate(c.date);
       const hasDetail = c.description || c.venueUrl || c.eventUrl;
       html += `
-        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${c.id}')"` : ''}>
+        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${escAttr(c.id)}')"` : ''}>
           <div class="concert-date">
             <span class="day">${rfd.day}</span>
             <span class="month-year">${rfd.monthYear}</span>
@@ -272,7 +291,10 @@ async function loadConcertsFull() {
   if (!upcomingContainer && !pastContainer) return;
 
   const data = await loadJSON('data/concerts.json');
-  if (!data) return;
+  if (!data) {
+    if (upcomingContainer) upcomingContainer.innerHTML = '<p role="alert" style="color:var(--grey);text-align:center;padding:2rem 0;">Koncerty se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>';
+    return;
+  }
   window._concertsData = data;
 
   if (upcomingContainer && data.upcoming) {
@@ -282,7 +304,7 @@ async function loadConcertsFull() {
       const cd = countdownText(c.date);
       const hasDetail = c.description || c.venueUrl || c.eventUrl;
       html += `
-        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${c.id}')"` : ''}>
+        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${escAttr(c.id)}')"` : ''}>
           <div class="concert-date">
             <span class="day">${fd.day}</span>
             <span class="month-year">${fd.monthYear}</span>
@@ -348,8 +370,8 @@ function playVideo(el) {
   const wrapper = el.closest('.video-thumb');
   if (!wrapper) return;
   const id = wrapper.dataset.ytId;
-  if (!id) return;
-  wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Video" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
+  if (!id || !isValidYtId(id)) return;
+  wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Video" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
 }
 
 // HOMEPAGE — bento layout with top 5 videos
@@ -404,7 +426,10 @@ async function loadVideos() {
   if (!featuredEl && !gridEl) return;
 
   const data = await loadJSON('data/videos.json');
-  if (!data) return;
+  if (!data) {
+    if (featuredEl) featuredEl.innerHTML = '<p role="alert" style="color:var(--grey);text-align:center;padding:2rem 0;">Videa se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>';
+    return;
+  }
 
   if (featuredEl && data.featured && data.featured.youtubeId) {
     const f = data.featured;
@@ -469,7 +494,10 @@ async function loadShop() {
   if (!grid) return;
 
   const data = await loadJSON('data/shop.json');
-  if (!data) return;
+  if (!data) {
+    grid.innerHTML = '<p role="alert" style="color:var(--grey);text-align:center;padding:2rem 0;">Obchod se nepodařilo načíst. <a href="javascript:location.reload()" style="color:var(--accent-bright)">Zkusit znovu</a></p>';
+    return;
+  }
   window._shopData = data;
 
   if (data.albums) {
@@ -482,7 +510,7 @@ async function loadShop() {
           <h3>${esc(a.title)}</h3>
           <p class="album-desc">${esc(a.description)}</p>
           <p class="album-price">${a.price} Kč <span class="album-shipping">+ ${a.shipping} Kč poštovné</span></p>
-          <button class="btn btn-primary" onclick="openOrderForm('${a.title}', ${i})">
+          <button class="btn btn-primary" onclick="openOrderForm('${escAttr(a.title)}', ${i})">
             <i class="fas fa-shopping-cart"></i> Objednat
           </button>
         </div>
@@ -495,10 +523,24 @@ async function loadShop() {
 }
 
 // ORDER FORM
+let _orderModalTrigger = null;
+function orderModalKeyHandler(e) {
+  const modal = document.getElementById('order-modal');
+  if (!modal) return;
+  if (e.key === 'Escape') { closeOrderForm(); return; }
+  if (e.key === 'Tab') {
+    const focusable = modal.querySelectorAll('a[href], button, input, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) return;
+    const first = focusable[0]; const last = focusable[focusable.length - 1];
+    if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+    else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  }
+}
 function openOrderForm(albumTitle, albumIndex) {
   // Remove existing modal if any
   const existing = document.getElementById('order-modal');
   if (existing) existing.remove();
+  _orderModalTrigger = document.activeElement;
 
   const modal = document.createElement('div');
   modal.id = 'order-modal';
@@ -508,9 +550,9 @@ function openOrderForm(albumTitle, albumIndex) {
     <div class="order-modal-content">
       <button class="order-modal-close" onclick="closeOrderForm()" aria-label="Zavřít">&times;</button>
       <h3><i class="fas fa-compact-disc"></i> Objednávka CD</h3>
-      <p class="order-album-title">${albumTitle}</p>
+      <p class="order-album-title">${esc(albumTitle)}</p>
       <form id="order-form" onsubmit="submitOrder(event, ${albumIndex})">
-        <input type="hidden" name="album" value="${albumTitle}">
+        <input type="hidden" name="album" value="${escAttr(albumTitle)}">
         <div class="form-group">
           <label for="order-name">Jméno a příjmení *</label>
           <input type="text" id="order-name" name="name" required placeholder="Jan Novák">
@@ -541,6 +583,7 @@ function openOrderForm(albumTitle, albumIndex) {
   document.body.appendChild(modal);
   requestAnimationFrame(() => modal.classList.add('active'));
   document.getElementById('order-name').focus();
+  document.addEventListener('keydown', orderModalKeyHandler);
 }
 
 function closeOrderForm() {
@@ -549,6 +592,8 @@ function closeOrderForm() {
     modal.classList.remove('active');
     setTimeout(() => modal.remove(), 300);
   }
+  document.removeEventListener('keydown', orderModalKeyHandler);
+  if (_orderModalTrigger) { _orderModalTrigger.focus(); _orderModalTrigger = null; }
 }
 
 function submitOrder(e, albumIndex) {

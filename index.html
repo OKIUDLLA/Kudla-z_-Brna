@@ -31,7 +31,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="color-scheme" content="dark">
-  <link rel="stylesheet" href="css/style.css?v=2.1">
+  <link rel="stylesheet" href="css/style.css?v=2.3">
 </head>
 <body>
   <a href="#main-content" class="skip-link sr-only">Přeskočit na obsah</a>
@@ -43,7 +43,7 @@
         <img src="img/logo.svg" alt="Kudla z Brna">
       </a>
 
-      <nav class="main-nav">
+      <nav class="main-nav" id="main-nav">
         <ul>
           <li><a href="index.html">Úvod</a></li>
           <li><a href="biografie.html">Biografie</a></li>
@@ -132,7 +132,7 @@
         <span class="section-label">Audio / Video</span>
         <h2 class="section-title">Poslouchejte <em>& sledujte</em></h2>
       </div>
-      <div id="video-bento" class="video-bento reveal"></div>
+      <div id="video-bento" class="video-bento reveal" aria-live="polite"></div>
       <div class="text-center mt-3 reveal">
         <a href="media.html" class="btn btn-ghost btn-sm">Všechna videa <i class="fas fa-arrow-right"></i></a>
       </div>
@@ -148,7 +148,7 @@
         <span class="section-label">Naživo</span>
         <h2 class="section-title">Nejbližší <em>koncerty</em></h2>
       </div>
-      <div id="concerts-list" class="concerts-list reveal"></div>
+      <div id="concerts-list" class="concerts-list reveal" aria-live="polite"></div>
       <div class="text-center mt-2 reveal">
         <a href="koncerty.html" class="btn btn-ghost btn-sm">Všechny koncerty <i class="fas fa-arrow-right"></i></a>
       </div>
@@ -178,7 +178,15 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=2.1"></script>
+  <script src="js/main.js?v=2.3"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Kudla z Brna",
+    "url": "https://kudlazbrna.netlify.app"
+  }
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

@@ -572,7 +572,7 @@ section { padding:6rem 0; position:relative; }
 .admin-form input:focus, .admin-form textarea:focus { outline: none; border-color: var(--accent-bright); }
 .admin-form textarea { min-height: 100px; resize: vertical; }
 .admin-item { background: var(--dark-3); border: 1px solid rgba(255,255,255,0.04); padding: 1rem 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
-.admin-item h4 { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; }
+.admin-item h3.admin-item-title { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; line-height: 1.3; }
 .admin-item .item-meta { color: var(--grey); font-size: 0.85rem; }
 .admin-item-actions { display: flex; gap: 0.5rem; }
 .admin-item-actions button { background: none; border: 1px solid var(--grey-dark); color: var(--grey-light); padding: 0.3rem 0.8rem; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; }
@@ -859,4 +859,11 @@ a.concert-detail-row--link:hover .concert-detail-action-icon { color:var(--accen
   img { max-width:100% !important; page-break-inside:avoid; }
   h2, h3 { page-break-after:avoid; }
   .concert-item { border-bottom:1px solid #ccc; padding:0.5rem 0; }
+  .scroll-top { display:none !important; }
+  .page-hero { background:none !important; padding:1rem 0; min-height:auto !important; }
+  .page-hero h1 { font-size:24pt; }
+  .about-strip, .bio-content, .contact-section { padding:1rem 0; }
+  .reveal { opacity:1 !important; transform:none !important; }
+  .about-tags .tag { border:1px solid #999; padding:2px 8px; font-size:0.8em; }
+  @page { margin:2cm; }
 }

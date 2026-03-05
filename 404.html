@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="color-scheme" content="dark">
-  <link rel="stylesheet" href="css/style.css?v=2.1">
+  <link rel="stylesheet" href="css/style.css?v=2.3">
   <style>
     .error-page {
       min-height: 100vh;
@@ -62,10 +62,12 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link sr-only">Přeskočit na obsah</a>
+
   <header class="site-header scrolled">
     <div class="header-inner">
       <a href="index.html" class="site-logo"><img src="img/logo.svg" alt="Kudla z Brna"></a>
-      <nav class="main-nav">
+      <nav class="main-nav" id="main-nav">
         <ul>
           <li><a href="index.html">Úvod</a></li>
           <li><a href="biografie.html">Biografie</a></li>
@@ -86,7 +88,7 @@
   </header>
   <div class="nav-overlay"></div>
 
-  <main class="error-page">
+  <main id="main-content" class="error-page">
     <div class="error-content">
       <div class="error-code">404</div>
       <h1 class="error-title">Tady nic nehraje</h1>
@@ -116,6 +118,6 @@
       <p class="footer-copy">&copy; 2026 Kudla z Brna</p>
     </div>
   </footer>
-  <script src="js/main.js?v=2.1"></script>
+  <script src="js/main.js?v=2.3"></script>
 </body>
 </html>
