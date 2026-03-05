@@ -167,6 +167,7 @@ async function loadConcerts() {
 
   const data = await loadJSON('data/concerts.json');
   if (!data) { container.innerHTML = '<p style="color:var(--grey);text-align:center;">Žádné koncerty k zobrazení.</p>'; return; }
+  window._concertsData = data;
 
   if (!data.upcoming || data.upcoming.length === 0) {
     container.innerHTML = '<p style="color:var(--grey);text-align:center;padding:2rem 0;">Žádné nadcházející koncerty. Sledujte sociální sítě.</p>';
@@ -238,14 +239,16 @@ async function loadConcertsFull() {
 
   const data = await loadJSON('data/concerts.json');
   if (!data) return;
+  window._concertsData = data;
 
   if (upcomingContainer && data.upcoming) {
     let html = '';
     data.upcoming.forEach(c => {
       const fd = formatDate(c.date);
       const cd = countdownText(c.date);
+      const hasDetail = c.description || c.venueUrl || c.eventUrl;
       html += `
-        <div class="concert-item">
+        <div class="concert-item${hasDetail ? ' clickable' : ''}" ${hasDetail ? `onclick="openConcertDetail('${c.id}')"` : ''}>
           <div class="concert-date">
             <span class="day">${fd.day}</span>
             <span class="month-year">${fd.monthYear}</span>
@@ -260,7 +263,7 @@ async function loadConcertsFull() {
             ${cd ? `<span class="concert-countdown-badge">${cd}</span>` : ''}
           </div>
           <div class="concert-link">
-            ${c.ticketUrl ? `<a href="${c.ticketUrl}" class="btn btn-primary btn-sm" target="_blank">Vstupenky</a>` : ''}
+            ${hasDetail ? '<span class="concert-detail-btn"><i class="fas fa-info-circle"></i></span>' : ''}
           </div>
         </div>`;
     });
@@ -541,6 +544,87 @@ function submitOrder(e, albumIndex) {
   // Show success state
   form.style.display = 'none';
   document.getElementById('order-success').style.display = 'flex';
+}
+
+// CONCERT DETAIL MODAL
+function openConcertDetail(concertId) {
+  const data = window._concertsData;
+  if (!data) return;
+  const all = [...(data.upcoming || []), ...(data.past || [])];
+  const c = all.find(x => x.id === concertId);
+  if (!c) return;
+
+  const existing = document.getElementById('concert-modal');
+  if (existing) existing.remove();
+
+  const d = new Date(c.date);
+  const dayName = DAYS_CS[d.getDay()];
+  const dateStr = d.getDate() + '. ' + MONTHS_FULL[d.getMonth()] + ' ' + d.getFullYear();
+  const cd = countdownText(c.date);
+  const typeLabel = c.type === 'koncert' ? 'Koncert' : c.type === 'festival' ? 'Festival' : c.type === 'akce' ? 'Akce' : 'Událost';
+  const icon = TYPE_ICONS[c.type] || 'fa-guitar';
+
+  let linksHtml = '';
+  if (c.venueUrl) {
+    linksHtml += `<a href="${c.venueUrl}" class="concert-detail-link" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Web místa konání</a>`;
+  }
+  if (c.ticketUrl) {
+    linksHtml += `<a href="${c.ticketUrl}" class="concert-detail-link ticket" target="_blank" rel="noopener"><i class="fas fa-ticket-alt"></i> Vstupenky</a>`;
+  }
+  if (c.eventUrl) {
+    linksHtml += `<a href="${c.eventUrl}" class="concert-detail-link event" target="_blank" rel="noopener"><i class="fab fa-facebook"></i> Událost na Facebooku</a>`;
+  }
+
+  const modal = document.createElement('div');
+  modal.id = 'concert-modal';
+  modal.className = 'concert-modal';
+  modal.innerHTML = `
+    <div class="concert-modal-backdrop" onclick="closeConcertDetail()"></div>
+    <div class="concert-modal-content">
+      <button class="concert-modal-close" onclick="closeConcertDetail()" aria-label="Zavřít">&times;</button>
+
+      <div class="concert-detail-header">
+        <span class="concert-type-tag ${c.type}"><i class="fas ${icon}"></i> ${typeLabel}</span>
+        ${cd ? `<span class="concert-countdown-badge">${cd}</span>` : ''}
+      </div>
+
+      <h3 class="concert-detail-title">${c.title}</h3>
+
+      <div class="concert-detail-meta">
+        <div class="concert-detail-row">
+          <i class="fas fa-calendar-alt"></i>
+          <span>${dayName}, ${dateStr}${c.time ? ' — ' + c.time : ''}</span>
+        </div>
+        ${c.venue ? `<div class="concert-detail-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>${concertVenueStr(c)}</span>
+        </div>` : `<div class="concert-detail-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>${c.city}</span>
+        </div>`}
+        ${c.note ? `<div class="concert-detail-row"><i class="fas fa-info-circle"></i><span>${c.note}</span></div>` : ''}
+      </div>
+
+      ${c.description ? `<p class="concert-detail-desc">${c.description}</p>` : ''}
+
+      ${linksHtml ? `<div class="concert-detail-links">${linksHtml}</div>` : ''}
+    </div>`;
+  document.body.appendChild(modal);
+  requestAnimationFrame(() => modal.classList.add('active'));
+  document.addEventListener('keydown', concertModalEsc);
+}
+
+function closeConcertDetail() {
+  const modal = document.getElementById('concert-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300);
+  }
+  document.removeEventListener('keydown', concertModalEsc);
+}
+
+function concertModalEsc(e) {
+  if (e.key === 'Escape') closeConcertDetail();
 }
 
 // Initialize data loading on page load

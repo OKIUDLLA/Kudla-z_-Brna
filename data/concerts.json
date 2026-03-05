@@ -9,7 +9,9 @@
       "city": "Šemanovice",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://nostalgickamys.com/",
+      "description": "Multifunkční podnik s restaurací, galerií a prostory pro koncerty. Nabízí českou kuchyni, točené pivo a ubytování."
     },
     {
       "id": "2026-04-11-uhersky-brod",
@@ -20,7 +22,9 @@
       "city": "Uherský Brod",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.dobremistoujezdec.cz/",
+      "description": "Moderní hudební a kulturní venue v regionu Uherský Brod. Pořádá koncerty a festivaly."
     },
     {
       "id": "2026-04-24-holesov",
@@ -31,7 +35,9 @@
       "city": "Holešov",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "",
+      "description": "Příjemná kavárna s venkovním posezením pod starými stromy. Domácí zmrzlina a výborná káva."
     },
     {
       "id": "2026-04-30-brno-carodky",
@@ -42,7 +48,9 @@
       "city": "Brno",
       "type": "akce",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "",
+      "description": "Tradiční pálení čarodějnic s živou hudbou."
     },
     {
       "id": "2026-06-04-brno-zelnak",
@@ -53,7 +61,9 @@
       "city": "Brno",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.trznicebrno.cz/",
+      "description": "Historický prostor na Zelném trhu v centru Brna. Tržnice slouží jako kulturní a společenský prostor."
     },
     {
       "id": "2026-06-20-potucky-festival",
@@ -64,7 +74,9 @@
       "city": "Potůčky",
       "type": "festival",
       "ticketUrl": "",
-      "note": "20–21. 6. 2026"
+      "note": "20–21. 6. 2026",
+      "venueUrl": "https://krusnohorci.cz/",
+      "description": "Letní kulturní festival s hudbou a aktivitami v Krušných horách."
     },
     {
       "id": "2026-07-02-ceske-budejovice",
@@ -75,7 +87,9 @@
       "city": "České Budějovice",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://cafehostel.metro.bar/",
+      "description": "Hostel s kavárnou v historickém centru Českých Budějovic. Ubytování, snídaně a grilování na terase."
     },
     {
       "id": "2026-07-09-cercanska-koupadla",
@@ -86,7 +100,9 @@
       "city": "Čerčany",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.cercanskakoupadla.cz/",
+      "description": "Prvorepublikové říční lázně z roku 1904. Glamping, restaurace a letní stage pro koncerty."
     },
     {
       "id": "2026-07-18-rosice",
@@ -97,7 +113,9 @@
       "city": "Rosice",
       "type": "festival",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.kic.rosice.cz/",
+      "description": "Tradiční letní festival malých pivovarů v renesančním zámku. Hudba, soutěže a degustace desítek pivovarů."
     },
     {
       "id": "2026-08-01-plzen",
@@ -108,7 +126,9 @@
       "city": "Někde u Plzně",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "",
+      "description": ""
     },
     {
       "id": "2026-08-15-lisen",
@@ -119,7 +139,9 @@
       "city": "Líšeň",
       "type": "akce",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "",
+      "description": "Narozeninová oslava Peťi Sussera s živou hudbou."
     },
     {
       "id": "2026-08-16-roznov",
@@ -130,7 +152,9 @@
       "city": "Rožnov pod Radhoštěm",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.visitroznov.cz/hudebni-altan/ds-1039",
+      "description": "Zrekonstruovaný dřevěný hudební pavilon z roku 1884 v obecním parku. Malebné prostředí pro koncerty."
     },
     {
       "id": "2026-08-20-moravska-trebova",
@@ -141,7 +165,9 @@
       "city": "Moravská Třebová",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "",
+      "description": ""
     },
     {
       "id": "2026-09-12-brno-u-sosny",
@@ -152,7 +178,9 @@
       "city": "Brno",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.objevbrno.cz/cs/venue/zahrada-u-sosny",
+      "description": "Venkovní posezení na břehu řeky s živou hudbou. Rodinné prostředí se hřištěm, grilem a dobrým výběrem piv."
     },
     {
       "id": "2026-09-19-kromeriz",
@@ -163,7 +191,9 @@
       "city": "Kroměříž",
       "type": "festival",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://www.kromeriz.eu/",
+      "description": "Městské slavnosti s koncerty, osvětlením města a workshopy."
     },
     {
       "id": "2026-11-14-svitavy",
@@ -174,7 +204,9 @@
       "city": "Svitavy",
       "type": "koncert",
       "ticketUrl": "",
-      "note": ""
+      "note": "",
+      "venueUrl": "https://tyjatrklub.cz/",
+      "description": "Alternativní kulturní klub v prostorách bývalého kina. Koncerty, divadlo a přednášky."
     }
   ],
   "past": []
