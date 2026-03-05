@@ -58,22 +58,23 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Order formulář s mailto integrací
 - Vylepšené tiskové styly (@media print)
 
-**PWA basics**
+**PWA**
 - manifest.json
 - apple-touch-icon (180x180)
 - theme-color + color-scheme meta
+- Service Worker s offline podporou (Network First HTML, Cache First assets)
+
+**Obrázky**
+- WebP verze klíčových obrázků (hero-bg, kudla-portrait, kudla-bio)
+- Responsive `<picture>` element se srcset a mobile verzemi (400w)
+- Hero background-image s CSS fallbackem
 
 ---
 
 ## Fáze 1 — Brzké vylepšení (nízké úsilí, vysoký dopad)
 
 ### ~~1.1 Minifikace CSS/JS~~ ✅
-- ~~Netlify plugin `netlify-plugin-minify-html`~~
-
-### 1.2 Responzivní obrázky
-- Vytvořit srcset verze klíčových obrázků (kudla-portrait, kudla-bio, og-image)
-- Přidat `<picture>` element s WebP alternativou
-- Nástroj: `sharp` nebo ImageMagick pro batch resize
+### ~~1.2 Responzivní obrázky~~ ✅
 
 ### 1.3 Spotify / Apple Music linky
 - Přidat do footer nebo contact sekce
@@ -87,10 +88,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 
 ## Fáze 2 — Střednědobé (střední úsilí)
 
-### 2.1 Service Worker pro offline
-- Caching strategie: Network First pro HTML, Cache First pro assets
-- Offline fallback stránka
-- Dokončení PWA — installable app
+### ~~2.1 Service Worker pro offline~~ ✅
 
 ### 2.2 Cookie/Consent banner
 - GDPR compliance (pokud se přidá analytics)

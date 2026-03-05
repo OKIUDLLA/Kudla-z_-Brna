@@ -139,7 +139,8 @@ section { padding:6rem 0; position:relative; }
   display:flex; align-items:center; justify-content:center; overflow:hidden;
 }
 .hero-bg {
-  position:absolute; inset:0; background:linear-gradient(135deg, #0a0a0a 0%, #0d1b2a 50%, #0a0a0a 100%); background-size:cover; background-position:center 30%;
+  position:absolute; inset:0;
+  background:url('../img/hero-bg.jpg') center 30% / cover no-repeat, linear-gradient(135deg, #0a0a0a 0%, #0d1b2a 50%, #0a0a0a 100%);
   filter:grayscale(100%); will-change:transform;
 }
 .hero-overlay {

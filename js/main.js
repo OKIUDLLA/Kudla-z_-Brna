@@ -188,6 +188,13 @@ function concertVenueStr(c) {
   return esc(c.venue);
 }
 
+// Czech plural for "den/dny/dní"
+function daysPlural(n) {
+  if (n === 1) return 'den';
+  if (n >= 2 && n <= 4) return 'dny';
+  return 'dní';
+}
+
 // Countdown text for upcoming concert
 function countdownText(dateStr) {
   const now = new Date();
@@ -202,7 +209,7 @@ function countdownText(dateStr) {
     const dayName = DAYS_CS[target.getDay()];
     return 'Tento ' + dayName;
   }
-  if (diffDays <= 30) return 'Za ' + diffDays + ' dní';
+  if (diffDays <= 30) return 'Za ' + diffDays + ' ' + daysPlural(diffDays);
   return '';
 }
 
