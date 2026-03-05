@@ -429,27 +429,118 @@ async function loadShop() {
 
   const data = await loadJSON('data/shop.json');
   if (!data) return;
+  window._shopData = data;
 
   if (data.albums) {
-    grid.innerHTML = data.albums.map(a => `
+    grid.innerHTML = data.albums.map((a, i) => `
       <div class="album-card">
         <div class="album-cover">
           <img src="${a.image}" alt="${a.title}" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:var(--grey);\\'><i class=\\'fas fa-compact-disc\\' style=\\'font-size:3rem;\\'></i></div>'">
         </div>
         <div class="album-info">
           <h3>${a.title}</h3>
-          <p class="album-price">${a.price} Kč</p>
-          <p class="album-shipping">+ ${a.shipping} Kč poštovné</p>
-          <a href="mailto:${a.orderEmail}?subject=${encodeURIComponent('Objednávka CD: ' + a.title)}&body=${encodeURIComponent('Dobrý den, rád/a bych si objednal/a CD \'' + a.title + '\'.')}" class="btn btn-primary">
-            <i class="fas fa-envelope"></i> Objednat
-          </a>
+          <p class="album-desc">${a.description}</p>
+          <p class="album-price">${a.price} Kč <span class="album-shipping">+ ${a.shipping} Kč poštovné</span></p>
+          <button class="btn btn-primary" onclick="openOrderForm('${a.title}', ${i})">
+            <i class="fas fa-shopping-cart"></i> Objednat
+          </button>
         </div>
       </div>`).join('');
   }
 
   if (shippingEl && data.shippingNote) {
-    shippingEl.innerHTML = `<strong><i class="fas fa-truck"></i> Doprava</strong><br>${data.shippingNote}`;
+    shippingEl.innerHTML = `<i class="fas fa-truck"></i> ${data.shippingNote}`;
   }
+}
+
+// ORDER FORM
+function openOrderForm(albumTitle, albumIndex) {
+  // Remove existing modal if any
+  const existing = document.getElementById('order-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'order-modal';
+  modal.className = 'order-modal';
+  modal.innerHTML = `
+    <div class="order-modal-backdrop" onclick="closeOrderForm()"></div>
+    <div class="order-modal-content">
+      <button class="order-modal-close" onclick="closeOrderForm()" aria-label="Zavřít">&times;</button>
+      <h3><i class="fas fa-compact-disc"></i> Objednávka CD</h3>
+      <p class="order-album-title">${albumTitle}</p>
+      <form id="order-form" onsubmit="submitOrder(event)">
+        <input type="hidden" name="album" value="${albumTitle}">
+        <div class="form-group">
+          <label for="order-name">Jméno a příjmení *</label>
+          <input type="text" id="order-name" name="name" required placeholder="Jan Novák">
+        </div>
+        <div class="form-group">
+          <label for="order-email">E-mail *</label>
+          <input type="email" id="order-email" name="email" required placeholder="jan@email.cz">
+        </div>
+        <div class="form-group">
+          <label for="order-address">Adresa pro zaslání *</label>
+          <textarea id="order-address" name="address" required rows="3" placeholder="Ulice 123&#10;602 00 Brno"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="order-note">Poznámka</label>
+          <input type="text" id="order-note" name="note" placeholder="Např. věnování, počet kusů...">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="fas fa-paper-plane"></i> Odeslat objednávku
+        </button>
+      </form>
+      <div id="order-success" class="order-success" style="display:none">
+        <i class="fas fa-check-circle"></i>
+        <h4>Objednávka odeslána!</h4>
+        <p>Kudla se vám ozve na zadaný e-mail s platebními údaji.</p>
+        <button class="btn btn-primary" onclick="closeOrderForm()">Zavřít</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  requestAnimationFrame(() => modal.classList.add('active'));
+  document.getElementById('order-name').focus();
+}
+
+function closeOrderForm() {
+  const modal = document.getElementById('order-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.remove(), 300);
+  }
+}
+
+function submitOrder(e) {
+  e.preventDefault();
+  const form = e.target;
+  const album = form.album.value;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const address = form.address.value.trim();
+  const note = form.note.value.trim();
+
+  const shopData = window._shopData;
+  const orderEmail = shopData && shopData.albums ? shopData.albums[0].orderEmail : 'm.kudlicka@seznam.cz';
+
+  const subject = encodeURIComponent('Objednávka CD: ' + album);
+  const body = encodeURIComponent(
+    'Nová objednávka z webu kudlazbrna.cz\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'CD: ' + album + '\n' +
+    'Jméno: ' + name + '\n' +
+    'E-mail: ' + email + '\n' +
+    'Adresa:\n' + address +
+    (note ? '\n\nPoznámka: ' + note : '') +
+    '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+    'Odesláno z webu kudlazbrna.cz'
+  );
+
+  // Open email client with pre-filled data
+  window.location.href = `mailto:${orderEmail}?subject=${subject}&body=${body}`;
+
+  // Show success state
+  form.style.display = 'none';
+  document.getElementById('order-success').style.display = 'flex';
 }
 
 // Initialize data loading on page load
