@@ -496,10 +496,9 @@ section { padding:6rem 0; position:relative; }
 .album-info { padding:1.5rem 2rem 2rem; }
 .album-info h3 { font-size:1.4rem; margin-bottom:0.5rem; }
 .album-price { font-size:1.6rem; font-weight:700; color:var(--accent-bright); }
-.album-shipping { font-size:0.8rem; color:var(--grey); margin-bottom:1.5rem; }
-.album-info .btn { width:100%; justify-content:center; }
-.album-desc { font-size:0.9rem; color:var(--grey); margin-bottom:0.5rem; }
 .album-shipping { font-size:0.85rem; color:var(--grey); font-weight:400; }
+.album-desc { font-size:0.9rem; color:var(--grey); margin-bottom:0.5rem; }
+.album-info .btn { width:100%; justify-content:center; }
 .shipping-info { max-width:600px; margin:3rem auto 0; text-align:center; padding:2rem; background:var(--dark-2); border:1px solid rgba(255,255,255,0.04); color:var(--grey-light); font-size:0.95rem; }
 .shipping-info strong { color:var(--white); }
 
@@ -512,7 +511,7 @@ section { padding:6rem 0; position:relative; }
 .order-modal-close { position:absolute; top:1rem; right:1.2rem; background:none; border:none; color:var(--grey); font-size:1.8rem; cursor:pointer; line-height:1; transition:color 0.2s; }
 .order-modal-close:hover { color:var(--white); }
 .order-modal-content h3 { font-family:var(--font-body); font-size:1.1rem; font-weight:600; color:var(--white); margin-bottom:0.3rem; }
-.order-album-title { font-family:var(--font-heading); font-size:1.5rem; color:var(--accent-bright); margin-bottom:1.5rem; }
+.order-album-title { font-family:var(--font-display); font-size:1.5rem; color:var(--accent-bright); margin-bottom:1.5rem; }
 .form-group { margin-bottom:1.2rem; }
 .form-group label { display:block; font-size:0.85rem; color:var(--grey-light); margin-bottom:0.4rem; font-weight:500; }
 .form-group input, .form-group textarea { width:100%; padding:0.75rem 1rem; background:var(--dark); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--white); font-size:0.95rem; font-family:var(--font-body); transition:border-color 0.2s; }

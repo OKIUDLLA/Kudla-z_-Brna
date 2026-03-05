@@ -468,7 +468,7 @@ function openOrderForm(albumTitle, albumIndex) {
       <button class="order-modal-close" onclick="closeOrderForm()" aria-label="Zavřít">&times;</button>
       <h3><i class="fas fa-compact-disc"></i> Objednávka CD</h3>
       <p class="order-album-title">${albumTitle}</p>
-      <form id="order-form" onsubmit="submitOrder(event)">
+      <form id="order-form" onsubmit="submitOrder(event, ${albumIndex})">
         <input type="hidden" name="album" value="${albumTitle}">
         <div class="form-group">
           <label for="order-name">Jméno a příjmení *</label>
@@ -510,7 +510,7 @@ function closeOrderForm() {
   }
 }
 
-function submitOrder(e) {
+function submitOrder(e, albumIndex) {
   e.preventDefault();
   const form = e.target;
   const album = form.album.value;
@@ -520,7 +520,7 @@ function submitOrder(e) {
   const note = form.note.value.trim();
 
   const shopData = window._shopData;
-  const orderEmail = shopData && shopData.albums ? shopData.albums[0].orderEmail : 'm.kudlicka@seznam.cz';
+  const orderEmail = shopData && shopData.albums && shopData.albums[albumIndex] ? shopData.albums[albumIndex].orderEmail : 'm.kudlicka@seznam.cz';
 
   const subject = encodeURIComponent('Objednávka CD: ' + album);
   const body = encodeURIComponent(
