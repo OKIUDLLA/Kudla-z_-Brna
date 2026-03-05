@@ -685,6 +685,13 @@ section { padding:6rem 0; position:relative; }
   font-size:0.95rem; color:var(--grey-lighter);
 }
 .concert-detail-row i { color:var(--accent-bright); width:18px; text-align:center; font-size:0.85rem; }
+a.concert-detail-row--link {
+  text-decoration:none; color:var(--grey-lighter); padding:0.5rem 0.7rem; margin:-0.5rem -0.7rem;
+  border-radius:8px; transition:all 0.2s var(--ease); cursor:pointer;
+}
+a.concert-detail-row--link:hover { background:rgba(56,182,255,0.06); color:var(--white); }
+.concert-detail-action-icon { font-size:0.7rem !important; color:var(--grey) !important; margin-left:auto; transition:color 0.2s; }
+a.concert-detail-row--link:hover .concert-detail-action-icon { color:var(--accent-bright) !important; }
 .concert-detail-desc {
   color:var(--grey-light); font-size:0.95rem; line-height:1.7;
   padding:1rem 0; border-top:1px solid rgba(255,255,255,0.06);

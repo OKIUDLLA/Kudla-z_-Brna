@@ -564,6 +564,21 @@ function openConcertDetail(concertId) {
   const typeLabel = c.type === 'koncert' ? 'Koncert' : c.type === 'festival' ? 'Festival' : c.type === 'akce' ? 'Akce' : 'Událost';
   const icon = TYPE_ICONS[c.type] || 'fa-guitar';
 
+  // Google Maps link for venue
+  const mapQuery = encodeURIComponent((c.venue ? c.venue + ', ' : '') + (c.city || ''));
+  const mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + mapQuery;
+
+  // Google Calendar link
+  const calDate = c.date.replace(/-/g, '');
+  const calTimeStart = c.time ? c.time.replace(':', '') + '00' : '190000';
+  const calHour = c.time ? parseInt(c.time.split(':')[0]) : 19;
+  const calTimeEnd = (calHour + 2 < 24 ? String(calHour + 2).padStart(2,'0') : '23') + (c.time ? c.time.split(':')[1] : '00') + '00';
+  const calStart = calDate + 'T' + calTimeStart;
+  const calEnd = calDate + 'T' + calTimeEnd;
+  const calTitle = encodeURIComponent(c.title + ' — Kudla z Brna');
+  const calLocation = encodeURIComponent((c.venue ? c.venue + ', ' : '') + (c.city || ''));
+  const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${calStart}/${calEnd}&location=${calLocation}`;
+
   let linksHtml = '';
   if (c.venueUrl) {
     linksHtml += `<a href="${c.venueUrl}" class="concert-detail-link" target="_blank" rel="noopener"><i class="fas fa-globe"></i> Web místa konání</a>`;
@@ -591,17 +606,16 @@ function openConcertDetail(concertId) {
       <h3 class="concert-detail-title">${c.title}</h3>
 
       <div class="concert-detail-meta">
-        <div class="concert-detail-row">
+        <a href="${calUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener" title="Přidat do Google Kalendáře">
           <i class="fas fa-calendar-alt"></i>
           <span>${dayName}, ${dateStr}${c.time ? ' — ' + c.time : ''}</span>
-        </div>
-        ${c.venue ? `<div class="concert-detail-row">
+          <i class="fas fa-plus-circle concert-detail-action-icon"></i>
+        </a>
+        <a href="${mapsUrl}" class="concert-detail-row concert-detail-row--link" target="_blank" rel="noopener" title="Otevřít v Mapách">
           <i class="fas fa-map-marker-alt"></i>
-          <span>${concertVenueStr(c)}</span>
-        </div>` : `<div class="concert-detail-row">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>${c.city}</span>
-        </div>`}
+          <span>${c.venue ? concertVenueStr(c) : c.city}</span>
+          <i class="fas fa-external-link-alt concert-detail-action-icon"></i>
+        </a>
         ${c.note ? `<div class="concert-detail-row"><i class="fas fa-info-circle"></i><span>${c.note}</span></div>` : ''}
       </div>
 
