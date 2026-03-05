@@ -2,15 +2,15 @@
    KUDLA Z BRNA — Service Worker
    Network First for HTML, Cache First for assets
    ============================================ */
-const CACHE_NAME = 'kudla-v3';
+const CACHE_NAME = 'kudla-v4';
 const OFFLINE_PAGE = '/404.html';
 
 // Assets to pre-cache on install
 const PRECACHE = [
   '/',
   '/index.html',
-  '/css/style.css?v=2.4',
-  '/js/main.js?v=2.4',
+  '/css/style.css?v=2.5',
+  '/js/main.js?v=2.5',
   '/img/logo.svg',
   '/img/favicon.png',
   '/manifest.json',

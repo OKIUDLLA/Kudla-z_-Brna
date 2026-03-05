@@ -8,13 +8,14 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 
 **SEO**
 - Canonical URL + OG tags + Twitter Cards na všech stránkách
-- sitemap.xml, robots.txt
+- sitemap.xml s lastmod daty, robots.txt
 - BreadcrumbList JSON-LD na podstránkách
 - MusicEvent JSON-LD na koncertech
 - MusicGroup + WebSite schema na homepage
 - Person schema na biografii
 - MusicAlbum schema na shop stránce
 - Preconnect + dns-prefetch pro všechny external zdroje
+- Footer navigace s interními linky na všech stránkách
 
 **Performance**
 - Google Fonts přes `<link>` místo CSS @import
@@ -22,13 +23,17 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Loading skeletons se shimmer animací
 - Lazy loading na všech obrázcích
 - Cache headers (Netlify _headers + netlify.toml)
-- Cache busting (?v=2.2) na CSS/JS
+- Cache busting (?v=2.5) na CSS/JS
 - Automatická minifikace přes Netlify plugin (HTML, CSS, JS)
+- Preload hints na critical CSS a hero background (LCP)
+- fetchpriority="high" na LCP obrázcích
+- width/height atributy na všech obrázcích (prevence CLS)
+- CSS contain + content-visibility na heavy sections
 
 **Přístupnost (WCAG)**
 - Skip link na všech stránkách
 - Focus-visible styly pro keyboard navigaci
-- Focus trap v lightboxu, concert modalu i order modalu
+- Focus trap v lightboxu, concert modalu, order modalu i mobile nav
 - Focus return při zavření všech modalů
 - aria-current="page" na aktivním nav linku
 - aria-expanded na mobile menu toggle
@@ -38,6 +43,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - prefers-reduced-motion — vypíná animace i parallax
 - Screen reader labels na všech interaktivních prvcích
 - role="alert" na chybových zprávách
+- Footer nav s aria-label="Patička"
 
 **Bezpečnost**
 - XSS ochrana: esc() + escAttr() funkce na všech dynamických datech
@@ -57,6 +63,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Concert detail modal s Google Maps + Calendar linky
 - Order formulář s mailto integrací
 - Vylepšené tiskové styly (@media print)
+- Footer s navigací pro lepší orientaci
 
 **PWA**
 - manifest.json
@@ -65,8 +72,9 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Service Worker s offline podporou (Network First HTML, Cache First assets)
 
 **Obrázky**
-- WebP verze klíčových obrázků (hero-bg, kudla-portrait, kudla-bio)
+- WebP verze všech klíčových obrázků (hero-bg, kudla-portrait, kudla-bio, album covers, 23 gallery photos)
 - Responsive `<picture>` element se srcset a mobile verzemi (400w)
+- `<picture>` s WebP i pro album covery v shopu a galerii
 - Hero background-image s CSS fallbackem
 
 ---
@@ -75,12 +83,13 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 
 ### ~~1.1 Minifikace CSS/JS~~ ✅
 ### ~~1.2 Responzivní obrázky~~ ✅
+### ~~1.3 Preload & CLS prevence~~ ✅
 
-### 1.3 Spotify / Apple Music linky
+### 1.4 Spotify / Apple Music linky
 - Přidat do footer nebo contact sekce
 - Přidat do MusicGroup JSON-LD (sameAs pole)
 
-### 1.4 Analytics
+### 1.5 Analytics
 - Google Analytics 4 nebo Plausible (privacy-friendly)
 - Přidat consent banner před spuštěním analytics skriptu
 
@@ -141,3 +150,4 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - **Cache busting**: Při změnách CSS/JS zvýšit ?v= parametr
 - **Závislosti**: Kontrolovat aktualizace Font Awesome, Google Fonts
 - **Lighthouse audit**: Spustit 1x měsíčně pro kontrolu skóre
+- **Sitemap**: Aktualizovat lastmod při změnách obsahu
