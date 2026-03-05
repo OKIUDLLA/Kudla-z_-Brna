@@ -19,6 +19,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - VideoObject JSON-LD na media stránce (až 8 videí)
 - Preconnect + dns-prefetch pro všechny external zdroje
 - Footer navigace s interními linky + aria-current na všech stránkách
+- Spotify profily v sameAs JSON-LD (oba profily)
 
 **Performance**
 - Google Fonts přes `<link>` místo CSS @import
@@ -26,7 +27,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Loading skeletons se shimmer animací
 - Lazy loading na všech obrázcích (včetně footer log s width/height)
 - Cache headers (Netlify _headers + netlify.toml)
-- Cache busting (?v=2.6) na CSS/JS
+- Cache busting (?v=2.7) na CSS/JS
 - `defer` atribut na main.js pro neblokující rendering
 - Automatická minifikace přes Netlify plugin (HTML, CSS, JS)
 - Preload hints na critical CSS na všech stránkách + hero background (LCP)
@@ -70,6 +71,8 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Vylepšené tiskové styly (@media print) — kontakty, galerie, album karty
 - Lightbox počítadlo fotek (3 / 23) s aria-live
 - Footer s navigací pro lepší orientaci
+- Spotify ikona v header, footer i kontakt social sekcích
+- Newsletter formulář ve footeru (Netlify Forms, AJAX submit, success zpráva)
 
 **PWA**
 - manifest.json s shortcuts (Koncerty, Shop, Kontakt), maskable icon, scope, id
@@ -80,7 +83,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 
 **Caching**
 - Long-term immutable cache headers pro img/, css/, js/ (max-age=1 rok)
-- Cache busting (?v=2.6) pro bezpečné aktualizace
+- Cache busting (?v=2.7) pro bezpečné aktualizace
 
 **Obrázky**
 - WebP verze všech klíčových obrázků (hero-bg, kudla-portrait, kudla-bio, album covers, 23 gallery photos)
@@ -97,9 +100,9 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 ### ~~1.3 Preload & CLS prevence~~ ✅
 ### ~~1.4 ContactPoint schema & image decoding~~ ✅
 
-### 1.5 Spotify / Apple Music linky
-- Přidat do footer nebo contact sekce
-- Přidat do MusicGroup JSON-LD (sameAs pole)
+### ~~1.5 Spotify linky~~ ✅
+- ~~Přidat do header, footer i contact social sekce~~
+- ~~Přidat do MusicGroup + Person JSON-LD (sameAs pole)~~
 
 ### 1.6 Analytics
 - Google Analytics 4 nebo Plausible (privacy-friendly)
@@ -116,10 +119,10 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Jednoduchý banner s Accept/Decline
 - Uložení preference do localStorage
 
-### 2.3 Newsletter / Mailing list
-- Integrace s Mailchimp nebo Buttondown
-- Formulář v kontakt sekci nebo footer
-- Automatický email při novém koncertu
+### ~~2.3 Newsletter / Odběr novinek~~ ✅
+- ~~Netlify Forms formulář ve footeru na všech stránkách~~
+- ~~AJAX submit s loading spinner a success zprávou~~
+- ~~Responsivní design (stacked na mobilu)~~
 
 ### 2.4 Automatický deploy pipeline
 - GitHub Actions: lint HTML, validate JSON, minify, deploy

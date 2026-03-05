@@ -29,8 +29,43 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollTop();
   injectSkeletons();
   initDataLoading();
+  initNewsletter();
   registerSW();
 });
+
+// Newsletter form — AJAX submit via Netlify Forms
+function initNewsletter() {
+  const form = document.querySelector('.newsletter-form');
+  if (!form) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const btn = form.querySelector('button');
+    const email = form.querySelector('input[name="email"]');
+    if (!email.value) return;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    const body = new URLSearchParams(new FormData(form)).toString();
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'form-name=newsletter&' + body
+    })
+    .then(res => {
+      if (res.ok) {
+        form.innerHTML = '<p class="newsletter-success"><i class="fas fa-check"></i> Děkujeme za přihlášení!</p>';
+      } else {
+        throw new Error('fail');
+      }
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Odebírat';
+      email.setCustomValidity('Odeslání se nezdařilo. Zkuste to znovu.');
+      email.reportValidity();
+      setTimeout(() => email.setCustomValidity(''), 3000);
+    });
+  });
+}
 
 // Service Worker registration
 function registerSW() {
