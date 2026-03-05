@@ -13,18 +13,21 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - MusicEvent JSON-LD na koncertech
 - MusicGroup + WebSite schema na homepage
 - Person schema na biografii
-- MusicAlbum schema na shop stránce
+- MusicAlbum schema na shop stránce (s obrázky, žánrem, popisem)
 - ContactPoint schema na kontakt stránce (booking, email, telefon)
+- ImageGallery JSON-LD na fotogalerii
+- VideoObject JSON-LD na media stránce (až 8 videí)
 - Preconnect + dns-prefetch pro všechny external zdroje
-- Footer navigace s interními linky na všech stránkách
+- Footer navigace s interními linky + aria-current na všech stránkách
 
 **Performance**
 - Google Fonts přes `<link>` místo CSS @import
 - Font Awesome async loading (media="print" onload)
 - Loading skeletons se shimmer animací
-- Lazy loading na všech obrázcích
+- Lazy loading na všech obrázcích (včetně footer log s width/height)
 - Cache headers (Netlify _headers + netlify.toml)
-- Cache busting (?v=2.5) na CSS/JS
+- Cache busting (?v=2.6) na CSS/JS
+- `defer` atribut na main.js pro neblokující rendering
 - Automatická minifikace přes Netlify plugin (HTML, CSS, JS)
 - Preload hints na critical CSS na všech stránkách + hero background (LCP)
 - fetchpriority="high" na LCP obrázcích
@@ -52,7 +55,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - isValidYtId() validace YouTube ID před vložením do iframe
 - rel="noopener noreferrer" na všech external odkazech
 - Security headers: HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, X-XSS-Protection
-- Content-Security-Policy header
+- Content-Security-Policy header (frame-ancestors, base-uri, form-action, upgrade-insecure-requests)
 - Noscript fallback na všech stránkách s dynamickým obsahem
 - Custom 404 stránka s quick links gridem
 
@@ -64,14 +67,20 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Error handling s retry logikou a "Zkusit znovu" linkem
 - Concert detail modal s Google Maps + Calendar linky
 - Order formulář s mailto integrací
-- Vylepšené tiskové styly (@media print)
+- Vylepšené tiskové styly (@media print) — kontakty, galerie, album karty
+- Lightbox počítadlo fotek (3 / 23) s aria-live
 - Footer s navigací pro lepší orientaci
 
 **PWA**
-- manifest.json
+- manifest.json s shortcuts (Koncerty, Shop, Kontakt), maskable icon, scope, id
 - apple-touch-icon (180x180)
 - theme-color + color-scheme meta
 - Service Worker s offline podporou (Network First HTML, Cache First assets)
+- Vlastní offline.html fallback stránka s retry tlačítkem
+
+**Caching**
+- Long-term immutable cache headers pro img/, css/, js/ (max-age=1 rok)
+- Cache busting (?v=2.6) pro bezpečné aktualizace
 
 **Obrázky**
 - WebP verze všech klíčových obrázků (hero-bg, kudla-portrait, kudla-bio, album covers, 23 gallery photos)

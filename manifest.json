@@ -1,15 +1,43 @@
 {
-  "name": "Kudla z Brna",
+  "id": "/",
+  "name": "Kudla z Brna — Písničkář, textař, moravský hlas",
   "short_name": "Kudla",
-  "description": "Brněnský písničkář, textař, moravský hlas rádia BEAT.",
+  "description": "Brněnský písničkář, textař, moravský hlas rádia BEAT. Sólo s looperem.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#050505",
   "theme_color": "#0a0a0a",
   "icons": [
     { "src": "img/favicon.png", "sizes": "64x64", "type": "image/png" },
-    { "src": "img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+    { "src": "img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "img/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Koncerty",
+      "short_name": "Koncerty",
+      "url": "/koncerty.html",
+      "description": "Nejbližší koncerty Kudly z Brna",
+      "icons": [{ "src": "img/favicon.png", "sizes": "64x64" }]
+    },
+    {
+      "name": "CD Shop",
+      "short_name": "Shop",
+      "url": "/shop.html",
+      "description": "Objednejte si CD alba",
+      "icons": [{ "src": "img/favicon.png", "sizes": "64x64" }]
+    },
+    {
+      "name": "Kontakt",
+      "short_name": "Kontakt",
+      "url": "/kontakt.html",
+      "description": "Booking a spolupráce",
+      "icons": [{ "src": "img/favicon.png", "sizes": "64x64" }]
+    }
   ],
   "lang": "cs",
+  "dir": "ltr",
   "categories": ["music", "entertainment"]
 }

@@ -107,6 +107,14 @@ function initLightbox() {
   const closeBtn = lightbox.querySelector('.lightbox-close');
   const prevBtn = lightbox.querySelector('.lightbox-prev');
   const nextBtn = lightbox.querySelector('.lightbox-next');
+  // Create counter element
+  let counter = lightbox.querySelector('.lightbox-counter');
+  if (!counter) {
+    counter = document.createElement('span');
+    counter.className = 'lightbox-counter';
+    counter.setAttribute('aria-live', 'polite');
+    lightbox.appendChild(counter);
+  }
   const items = document.querySelectorAll('.gallery-item');
   let current = 0;
   let lastFocused = null;
@@ -120,7 +128,7 @@ function initLightbox() {
       item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLB(); } });
     }
   });
-  function show(idx) { if (images[idx]) img.src = images[idx]; }
+  function show(idx) { if (images[idx]) { img.src = images[idx]; counter.textContent = (idx + 1) + ' / ' + images.length; } }
   function closeLB() { lightbox.classList.remove('active'); document.body.style.overflow = ''; if (lastFocused) lastFocused.focus(); }
 
   // Focus trap inside lightbox
@@ -149,7 +157,7 @@ function initLightbox() {
 
 function setActiveNav() {
   const page = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.main-nav a').forEach(a => {
+  document.querySelectorAll('.main-nav a, .footer-nav a').forEach(a => {
     const href = a.getAttribute('href');
     if (href === page || (page === '' && href === 'index.html')) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
   });
@@ -480,6 +488,30 @@ async function loadVideos() {
         </div>`).join('');
     }
   }
+
+  // Inject VideoObject JSON-LD for media page
+  if (gridEl) {
+    const allVids = [];
+    if (data.featured && data.featured.youtubeId) allVids.push(data.featured);
+    if (data.videos) data.videos.filter(v => v.youtubeId).forEach(v => allVids.push(v));
+    if (allVids.length > 0) {
+      const videoLd = allVids.slice(0, 8).map(v => ({
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": v.title,
+        "description": v.description || v.title,
+        "thumbnailUrl": `https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`,
+        "embedUrl": `https://www.youtube.com/embed/${v.youtubeId}`,
+        "url": `https://www.youtube.com/watch?v=${v.youtubeId}`,
+        "uploadDate": v.date || "2024-01-01",
+        "author": { "@type": "MusicGroup", "name": "Kudla z Brna" }
+      }));
+      const s = document.createElement('script');
+      s.type = 'application/ld+json';
+      s.textContent = JSON.stringify(videoLd);
+      document.head.appendChild(s);
+    }
+  }
 }
 
 // GALLERY
@@ -506,6 +538,23 @@ async function loadGallery() {
 
   // Re-init lightbox after dynamic load
   initLightbox();
+
+  // Inject ImageGallery JSON-LD
+  if (data.photos.length > 0) {
+    const galleryLd = {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": "Fotogalerie — Kudla z Brna",
+      "description": "Černobílé koncertní fotografie Kudly z Brna",
+      "url": "https://kudlazbrna.netlify.app/foto.html",
+      "numberOfItems": data.photos.length,
+      "author": { "@type": "MusicGroup", "name": "Kudla z Brna" }
+    };
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify(galleryLd);
+    document.head.appendChild(s);
+  }
 }
 
 // SHOP

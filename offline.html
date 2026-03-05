@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline — Kudla z Brna</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="color-scheme" content="dark">
+  <style>
+    :root { --black:#050505; --dark:#0a0a0a; --grey:#888; --grey-light:#999; --white:#f0f0f0; --accent-bright:#38b6ff; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { color-scheme:dark; }
+    body { font-family:'Inter',-apple-system,sans-serif; background:var(--dark); color:var(--white); line-height:1.7; -webkit-font-smoothing:antialiased; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; text-align:center; }
+    .offline-content { max-width:440px; }
+    .offline-icon { font-size:4rem; margin-bottom:1.5rem; opacity:0.6; }
+    .offline-title { font-size:clamp(1.5rem,3vw,2rem); font-weight:800; margin-bottom:0.75rem; }
+    .offline-text { color:var(--grey-light); font-size:1rem; margin-bottom:2rem; }
+    .offline-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 2rem; font-size:0.9rem; font-weight:600; color:var(--white); background:var(--accent-bright); border:none; border-radius:8px; cursor:pointer; transition:opacity 0.3s; text-decoration:none; }
+    .offline-btn:hover { opacity:0.85; }
+  </style>
+</head>
+<body>
+  <div class="offline-content">
+    <div class="offline-icon">&#128268;</div>
+    <h1 class="offline-title">Jste offline</h1>
+    <p class="offline-text">
+      Vypadá to, že nemáte připojení k internetu. Zkontrolujte připojení a zkuste to znovu.
+    </p>
+    <button class="offline-btn" onclick="location.reload()">
+      Zkusit znovu
+    </button>
+  </div>
+</body>
+</html>

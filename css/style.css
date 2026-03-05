@@ -460,6 +460,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
 .lightbox-nav:hover { opacity:1; }
 .lightbox-prev { left:1rem; }
 .lightbox-next { right:1rem; }
+.lightbox-counter { position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%); color:var(--grey-light); font-size:0.85rem; font-variant-numeric:tabular-nums; letter-spacing:0.05em; background:rgba(0,0,0,0.5); padding:0.3rem 1rem; border-radius:20px; }
 
 /* ============================================
    CONTACT
@@ -535,7 +536,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
 .footer-logo img { height:42px; opacity:0.7; }
 .footer-nav { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; }
 .footer-nav a { color:var(--grey); font-size:0.85rem; transition:color 0.3s; }
-.footer-nav a:hover { color:var(--accent-bright); }
+.footer-nav a:hover, .footer-nav a.active { color:var(--accent-bright); }
 .footer-social { display:flex; gap:1rem; }
 .footer-social a { color:var(--grey); font-size:1rem; transition:color 0.3s; }
 .footer-social a:hover { color:var(--white); }
@@ -870,5 +871,21 @@ a.concert-detail-row--link:hover .concert-detail-action-icon { color:var(--accen
   .about-strip, .bio-content, .contact-section { padding:1rem 0; }
   .reveal { opacity:1 !important; transform:none !important; }
   .about-tags .tag { border:1px solid #999; padding:2px 8px; font-size:0.8em; }
+  .gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+  .gallery-item { break-inside:avoid; }
+  .contact-grid { display:block; }
+  .contact-item { padding:0.3rem 0; }
+  .contact-icon { display:none; }
+  .social-row, .social-btn { display:none !important; }
+  .info-card { border:1px solid #ccc; padding:1rem; margin-top:1rem; }
+  .album-card { break-inside:avoid; margin-bottom:1rem; border:1px solid #ccc; padding:0.5rem; }
+  .album-cover { max-width:200px; }
+  .album-price { font-weight:bold; }
+  .shipping-info { font-size:0.85em; }
+  .video-section, .video-bento, .video-grid, .video-featured { display:none !important; }
+  .skeleton { display:none !important; }
+  .noscript { display:none !important; }
+  .footer-nav a::after { content:""; }
+  .lightbox-counter { display:none !important; }
   @page { margin:2cm; }
 }
