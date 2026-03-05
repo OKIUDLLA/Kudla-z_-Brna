@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2.1">
   <style>
     /* Admin-specific overrides */
     .admin-publish-bar {
@@ -307,7 +307,7 @@
           <h2><i class="fab fa-github"></i> GitHub nastavení</h2>
           <p style="color:var(--grey-light);margin-bottom:1rem;">
             Zadejte GitHub Personal Access Token. Token se zapamatuje v prohlížeči, nemusíte ho zadávat pokaždé. Token vytvoříte na
-            <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--accent-bright);">github.com/settings/tokens</a>
+            <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" style="color:var(--accent-bright);">github.com/settings/tokens</a>
             s oprávněním <code>repo</code>.
           </p>
           <div class="admin-form">
@@ -950,7 +950,7 @@
     ['concerts','videos','gallery','shop','bio','site'].forEach(k => localStorage.removeItem('kudla_' + k));
     hasUnsavedChanges = false;
     updatePublishBar();
-    showMessage('<i class="fas fa-check-circle"></i> Publikováno! Web se aktualizuje do 1-2 minut. <a href="https://kudlazbrna.netlify.app" target="_blank" style="color:var(--accent-bright);">Zobrazit web</a>', 'success');
+    showMessage('<i class="fas fa-check-circle"></i> Publikováno! Web se aktualizuje do 1-2 minut. <a href="https://kudlazbrna.netlify.app" target="_blank" rel="noopener noreferrer" style="color:var(--accent-bright);">Zobrazit web</a>', 'success');
   }
 
   // ---- INIT ----
