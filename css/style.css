@@ -160,7 +160,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
 .hero-content { position:relative; z-index:2; text-align:center; padding:0 2rem; width:100%; margin-top:calc(var(--header-h) * -1); }
 
 .hero-logo {
-  width:clamp(340px,58vw,700px); margin:0 auto 0.2rem;
+  width:clamp(340px,58vw,700px); margin:0 auto -0.5rem;
   opacity:0; animation:heroFadeUp 1.2s var(--ease-out) 0.3s forwards;
 }
 .hero-tagline {
@@ -177,7 +177,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   opacity:0; animation:heroFadeUp 1s var(--ease-out) 1s forwards;
 }
 .hero-scroll {
-  position:absolute; bottom:2.5rem; left:calc(50% - 0.5rem); transform:translateX(-50%); z-index:2;
+  position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); z-index:2;
   display:flex; align-items:center; justify-content:center;
   width:44px; height:44px; border-radius:50%;
   border:1px solid rgba(255,255,255,0.15);
