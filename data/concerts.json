@@ -1,48 +1,181 @@
 {
   "upcoming": [
     {
-      "id": "2026-03-15-kabinet-muz",
-      "date": "2026-03-15",
-      "time": "20:00",
-      "title": "Jarní koncert — Kudla sólo",
-      "venue": "Kabinet Múz",
+      "id": "2026-04-05-semanovice",
+      "date": "2026-04-05",
+      "time": "",
+      "title": "MirkaPárty",
+      "venue": "Nostalgická myš",
+      "city": "Šemanovice",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-04-11-uhersky-brod",
+      "date": "2026-04-11",
+      "time": "",
+      "title": "Koncert",
+      "venue": "Dobré místo Újezdec",
+      "city": "Uherský Brod",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-04-24-holesov",
+      "date": "2026-04-24",
+      "time": "",
+      "title": "Koncert",
+      "venue": "Kavárna u Amose",
+      "city": "Holešov",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-04-30-brno-carodky",
+      "date": "2026-04-30",
+      "time": "",
+      "title": "Čarodky",
+      "venue": "Chata M+J",
+      "city": "Brno",
+      "type": "akce",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-06-04-brno-zelnak",
+      "date": "2026-06-04",
+      "time": "18:00",
+      "title": "Koncert",
+      "venue": "Zelňák",
       "city": "Brno",
       "type": "koncert",
       "ticketUrl": "",
       "note": ""
     },
     {
-      "id": "2026-04-22-sono-centrum",
-      "date": "2026-04-22",
-      "time": "19:00",
-      "title": "Hudební festival Brno",
-      "venue": "Sono Centrum",
-      "city": "Brno",
+      "id": "2026-06-20-potucky-festival",
+      "date": "2026-06-20",
+      "time": "",
+      "title": "Krušnohorský festival",
+      "venue": "Krušnohorský festival",
+      "city": "Potůčky",
       "type": "festival",
+      "ticketUrl": "",
+      "note": "20–21. 6. 2026"
+    },
+    {
+      "id": "2026-07-02-ceske-budejovice",
+      "date": "2026-07-02",
+      "time": "",
+      "title": "Koncert",
+      "venue": "Cafe Hostel",
+      "city": "České Budějovice",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-07-09-cercanska-koupadla",
+      "date": "2026-07-09",
+      "time": "",
+      "title": "Koncert",
+      "venue": "Čerčanská koupadla",
+      "city": "Čerčany",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-07-18-rosice",
+      "date": "2026-07-18",
+      "time": "",
+      "title": "Slavnosti malých pivovarů",
+      "venue": "Slavnosti malých pivovarů",
+      "city": "Rosice",
+      "type": "festival",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-08-01-plzen",
+      "date": "2026-08-01",
+      "time": "",
+      "title": "V.I.P.",
+      "venue": "V.I.P.",
+      "city": "Někde u Plzně",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-08-15-lisen",
+      "date": "2026-08-15",
+      "time": "",
+      "title": "Peťa Susser 60",
+      "venue": "Na Břízkách",
+      "city": "Líšeň",
+      "type": "akce",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-08-16-roznov",
+      "date": "2026-08-16",
+      "time": "18:00",
+      "title": "Koncert",
+      "venue": "Hudební Altán",
+      "city": "Rožnov pod Radhoštěm",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-08-20-moravska-trebova",
+      "date": "2026-08-20",
+      "time": "",
+      "title": "Koncert",
+      "venue": "",
+      "city": "Moravská Třebová",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-09-12-brno-u-sosny",
+      "date": "2026-09-12",
+      "time": "",
+      "title": "Kudla + Gustavo Rojo + Johny Čurbes + Kule + T1M3LAND",
+      "venue": "U Sosny",
+      "city": "Brno",
+      "type": "koncert",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-09-19-kromeriz",
+      "date": "2026-09-19",
+      "time": "12:00",
+      "title": "Městské slavnosti",
+      "venue": "Městské slavnosti",
+      "city": "Kroměříž",
+      "type": "festival",
+      "ticketUrl": "",
+      "note": ""
+    },
+    {
+      "id": "2026-11-14-svitavy",
+      "date": "2026-11-14",
+      "time": "",
+      "title": "His Angels + Dave Goodman + Kudla z Brna",
+      "venue": "Tyjátr",
+      "city": "Svitavy",
+      "type": "koncert",
       "ticketUrl": "",
       "note": ""
     }
   ],
-  "past": [
-    {
-      "id": "2025-12-20-kabinet-muz",
-      "date": "2025-12-20",
-      "time": "20:00",
-      "title": "Vánoční koncert",
-      "venue": "Kabinet Múz",
-      "city": "Brno",
-      "type": "koncert",
-      "note": ""
-    },
-    {
-      "id": "2025-10-15-metro-music",
-      "date": "2025-10-15",
-      "time": "21:00",
-      "title": "Podzimní sólo",
-      "venue": "Metro Music Bar",
-      "city": "Brno",
-      "type": "koncert",
-      "note": ""
-    }
-  ]
+  "past": []
 }
