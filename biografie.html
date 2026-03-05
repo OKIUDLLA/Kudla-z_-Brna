@@ -31,6 +31,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="color-scheme" content="dark">
+  <link rel="preload" href="css/style.css?v=2.5" as="style">
   <link rel="stylesheet" href="css/style.css?v=2.5">
 </head>
 <body>
@@ -74,7 +75,7 @@
         <div class="about-image">
           <picture>
             <source type="image/webp" srcset="img/kudla-bio-400w.webp 400w, img/kudla-bio.webp 640w" sizes="(max-width: 768px) 400px, 640px">
-            <img src="img/kudla-bio.jpg" alt="Martin „Kudla" Kudlička" loading="lazy" width="640" height="960">
+            <img src="img/kudla-bio.jpg" alt="Martin „Kudla" Kudlička" loading="lazy" decoding="async" width="640" height="960">
           </picture>
         </div>
         <div class="bio-text">

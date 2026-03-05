@@ -14,6 +14,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - MusicGroup + WebSite schema na homepage
 - Person schema na biografii
 - MusicAlbum schema na shop stránce
+- ContactPoint schema na kontakt stránce (booking, email, telefon)
 - Preconnect + dns-prefetch pro všechny external zdroje
 - Footer navigace s interními linky na všech stránkách
 
@@ -25,9 +26,10 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Cache headers (Netlify _headers + netlify.toml)
 - Cache busting (?v=2.5) na CSS/JS
 - Automatická minifikace přes Netlify plugin (HTML, CSS, JS)
-- Preload hints na critical CSS a hero background (LCP)
+- Preload hints na critical CSS na všech stránkách + hero background (LCP)
 - fetchpriority="high" na LCP obrázcích
 - width/height atributy na všech obrázcích (prevence CLS)
+- decoding="async" na všech lazy-loaded obrázcích
 - CSS contain + content-visibility na heavy sections
 
 **Přístupnost (WCAG)**
@@ -52,7 +54,7 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 - Security headers: HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, X-XSS-Protection
 - Content-Security-Policy header
 - Noscript fallback na všech stránkách s dynamickým obsahem
-- Custom 404 stránka
+- Custom 404 stránka s quick links gridem
 
 **UX**
 - Scroll-to-top tlačítko
@@ -84,12 +86,13 @@ Web je v solidním stavu. Všechny hlavní optimalizace provedeny:
 ### ~~1.1 Minifikace CSS/JS~~ ✅
 ### ~~1.2 Responzivní obrázky~~ ✅
 ### ~~1.3 Preload & CLS prevence~~ ✅
+### ~~1.4 ContactPoint schema & image decoding~~ ✅
 
-### 1.4 Spotify / Apple Music linky
+### 1.5 Spotify / Apple Music linky
 - Přidat do footer nebo contact sekce
 - Přidat do MusicGroup JSON-LD (sameAs pole)
 
-### 1.5 Analytics
+### 1.6 Analytics
 - Google Analytics 4 nebo Plausible (privacy-friendly)
 - Přidat consent banner před spuštěním analytics skriptu
 

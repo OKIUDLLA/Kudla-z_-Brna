@@ -412,7 +412,7 @@ async function loadVideoTeaser() {
   bento.innerHTML = `
     <div class="bento-hero">
       <div class="video-thumb bento-main" data-yt-id="${big.youtubeId}" onclick="playVideo(this)">
-        <img src="${videoThumbMax(big.youtubeId)}" alt="${esc(big.title)}" width="1280" height="720" loading="lazy"
+        <img src="${videoThumbMax(big.youtubeId)}" alt="${esc(big.title)}" width="1280" height="720" loading="lazy" decoding="async"
              onerror="this.src='${videoThumb(big.youtubeId)}'">
         ${playBtn}
         <div class="bento-main-info">
@@ -425,7 +425,7 @@ async function loadVideoTeaser() {
     <div class="bento-side">
       ${small.map((v, i) => `
         <div class="video-thumb bento-item" data-yt-id="${v.youtubeId}" onclick="playVideo(this)">
-          <img src="${videoThumb(v.youtubeId)}" alt="${esc(v.title)}" width="480" height="360" loading="lazy">
+          <img src="${videoThumb(v.youtubeId)}" alt="${esc(v.title)}" width="480" height="360" loading="lazy" decoding="async">
           ${playBtn}
           <div class="bento-item-info">
             <span class="bento-rank">#${i + 2}</span>
@@ -450,7 +450,7 @@ async function loadVideos() {
     const f = data.featured;
     featuredEl.innerHTML = `
       <div class="video-thumb video-thumb--featured" data-yt-id="${f.youtubeId}">
-        <img src="${videoThumb(f.youtubeId)}" alt="${esc(f.title)}" width="480" height="360" loading="lazy">
+        <img src="${videoThumb(f.youtubeId)}" alt="${esc(f.title)}" width="480" height="360" loading="lazy" decoding="async">
         <button class="video-play-btn" onclick="playVideo(this)" aria-label="Přehrát video">
           <svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
         </button>
@@ -467,7 +467,7 @@ async function loadVideos() {
       gridEl.innerHTML = validVideos.map(v => `
         <div class="video-card">
           <div class="video-thumb" data-yt-id="${v.youtubeId}">
-            <img src="${videoThumb(v.youtubeId)}" alt="${esc(v.title)}" width="480" height="360" loading="lazy">
+            <img src="${videoThumb(v.youtubeId)}" alt="${esc(v.title)}" width="480" height="360" loading="lazy" decoding="async">
             <button class="video-play-btn" onclick="playVideo(this)" aria-label="Přehrát video">
               <svg viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
             </button>
@@ -499,7 +499,7 @@ async function loadGallery() {
     <div class="gallery-item" role="button" tabindex="0" aria-label="Zobrazit fotografii ${i + 1}">
       <picture>
         <source type="image/webp" srcset="${webpSrc}">
-        <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" onerror="this.closest('.gallery-item').style.display='none'">
+        <img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" decoding="async" onerror="this.closest('.gallery-item').style.display='none'">
       </picture>
     </div>`;
   }).join('');
@@ -529,7 +529,7 @@ async function loadShop() {
         <div class="album-cover">
           <picture>
             <source type="image/webp" srcset="${webpSrc}">
-            <img src="${a.image}" alt="${esc(a.title)}" width="800" height="793" loading="lazy" onerror="this.closest('.album-cover').innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:var(--grey);\\'><i class=\\'fas fa-compact-disc\\' style=\\'font-size:3rem;\\'></i></div>'">
+            <img src="${a.image}" alt="${esc(a.title)}" width="800" height="793" loading="lazy" decoding="async" onerror="this.closest('.album-cover').innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:var(--grey);\\'><i class=\\'fas fa-compact-disc\\' style=\\'font-size:3rem;\\'></i></div>'">
           </picture>
         </div>
         <div class="album-info">

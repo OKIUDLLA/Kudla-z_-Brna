@@ -31,6 +31,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="color-scheme" content="dark">
+  <link rel="preload" href="css/style.css?v=2.5" as="style">
   <link rel="stylesheet" href="css/style.css?v=2.5">
 </head>
 <body>
@@ -147,5 +148,28 @@
     </div>
   </footer>
   <script src="js/main.js?v=2.5"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Kudla z Brna",
+    "url": "https://kudlazbrna.netlify.app",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "booking",
+        "email": "m.kudlicka@seznam.cz",
+        "telephone": "+420608367837",
+        "areaServed": "CZ",
+        "availableLanguage": "Czech"
+      }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Brno",
+      "addressCountry": "CZ"
+    }
+  }
+  </script>
 </body>
 </html>

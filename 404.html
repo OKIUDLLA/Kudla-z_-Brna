@@ -59,6 +59,44 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    .error-suggestions {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .error-suggestions h2 {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 1rem;
+    }
+    .error-quick-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .error-quick-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1rem;
+      font-size: 0.85rem;
+      color: var(--grey-lighter);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .error-quick-link:hover {
+      color: var(--accent-bright);
+      border-color: rgba(56,182,255,0.2);
+      background: rgba(56,182,255,0.05);
+    }
+    .error-quick-link i { color: var(--accent-bright); width: 18px; text-align: center; font-size: 0.85rem; }
+    @media(max-width:480px) { .error-quick-links { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -103,6 +141,17 @@
         <a href="koncerty.html" class="btn btn-ghost">
           <i class="fas fa-calendar-alt"></i> Koncerty
         </a>
+      </div>
+      <div class="error-suggestions">
+        <h2>Třeba hledáte</h2>
+        <div class="error-quick-links">
+          <a href="biografie.html" class="error-quick-link"><i class="fas fa-user"></i> Biografie</a>
+          <a href="media.html" class="error-quick-link"><i class="fas fa-play"></i> Videa</a>
+          <a href="foto.html" class="error-quick-link"><i class="fas fa-camera"></i> Fotogalerie</a>
+          <a href="shop.html" class="error-quick-link"><i class="fas fa-compact-disc"></i> CD Shop</a>
+          <a href="kontakt.html" class="error-quick-link"><i class="fas fa-envelope"></i> Kontakt</a>
+          <a href="https://www.facebook.com/kudla.cz/" class="error-quick-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i> Facebook</a>
+        </div>
       </div>
     </div>
   </main>
