@@ -236,9 +236,11 @@ function videoThumb(id) {
 function videoThumbMax(id) {
   return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
 }
-function playVideo(btn) {
-  const wrapper = btn.closest('.video-thumb');
+function playVideo(el) {
+  const wrapper = el.closest('.video-thumb');
+  if (!wrapper) return;
   const id = wrapper.dataset.ytId;
+  if (!id) return;
   wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Video" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
 }
 
@@ -264,7 +266,7 @@ async function loadVideoTeaser() {
 
   bento.innerHTML = `
     <div class="bento-hero">
-      <div class="video-thumb bento-main" data-yt-id="${big.youtubeId}">
+      <div class="video-thumb bento-main" data-yt-id="${big.youtubeId}" onclick="playVideo(this)">
         <img src="${videoThumbMax(big.youtubeId)}" alt="${big.title}" loading="lazy"
              onerror="this.src='${videoThumb(big.youtubeId)}'">
         ${playBtn}
@@ -277,7 +279,7 @@ async function loadVideoTeaser() {
     </div>
     <div class="bento-side">
       ${small.map((v, i) => `
-        <div class="video-thumb bento-item" data-yt-id="${v.youtubeId}">
+        <div class="video-thumb bento-item" data-yt-id="${v.youtubeId}" onclick="playVideo(this)">
           <img src="${videoThumb(v.youtubeId)}" alt="${v.title}" loading="lazy">
           ${playBtn}
           <div class="bento-item-info">
