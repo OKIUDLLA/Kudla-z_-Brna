@@ -166,7 +166,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   min-height:0;
 }
 .hero-logo {
-  width:700px; max-width:85vw; max-height:45vh; flex-shrink:1;
+  width:1260px; max-width:85vw; max-height:45vh; flex-shrink:1;
   object-fit:contain;
   opacity:0; animation:heroFadeUp 1.2s var(--ease-out) 0.3s forwards;
 }
