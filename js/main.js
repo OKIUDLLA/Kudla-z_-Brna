@@ -36,10 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
 /* bfcache fix — reset hero animations on back/forward navigation */
 window.addEventListener('pageshow', (e) => {
   if (e.persisted) {
-    document.querySelectorAll('.hero-logo, .hero-tagline, .hero-cta .btn, .hero-scroll').forEach(el => {
+    document.querySelectorAll('.hero-logo, .hero-tagline, .hero-cta .btn').forEach(el => {
       el.style.animation = 'none';
       el.style.opacity = '1';
-      el.style.transform = el.classList.contains('hero-scroll') ? 'translateX(-50%)' : 'none';
+      el.style.transform = 'none';
     });
   }
 });

@@ -136,7 +136,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
    ============================================ */
 .hero {
   position:relative; height:100vh; height:100dvh;
-  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  display:flex; flex-direction:column; overflow:hidden;
   background:var(--black);
 }
 .hero-bg {
@@ -157,30 +157,39 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat:repeat;
 }
-.hero-content { position:relative; z-index:2; text-align:center; padding:0 2rem; width:100%; margin-top:calc(var(--header-h) * -1); }
-
+.hero-content {
+  position:relative; z-index:2; text-align:center;
+  padding:0 2rem;
+  width:100%;
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:0;
+}
 .hero-logo {
-  width:clamp(340px,58vw,700px); margin:0 auto -1.5rem;
+  width:clamp(280px,50vw,700px); max-height:45vh;
+  object-fit:contain;
   opacity:0; animation:heroFadeUp 1.2s var(--ease-out) 0.3s forwards;
 }
 .hero-tagline {
-  font-size:clamp(0.9rem,1.5vw,1.15rem); font-weight:300; color:var(--grey-lighter);
-  letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.6rem;
+  font-size:clamp(0.85rem,1.4vw,1.15rem); font-weight:300; color:var(--grey-lighter);
+  letter-spacing:0.15em; text-transform:uppercase;
+  margin:0.3rem 0 0.5rem;
   opacity:0; animation:heroFadeUp 1s var(--ease-out) 0.7s forwards;
 }
 .hero-tagline span { color:var(--white); font-weight:500; }
 .hero-cta {
   display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
-  margin-bottom:0;
 }
 .hero-cta .btn {
   width:210px; justify-content:center;
   opacity:0; animation:heroFadeUp 1s var(--ease-out) 1s forwards;
 }
 .hero-scroll {
-  position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); z-index:2;
+  z-index:2;
   display:flex; align-items:center; justify-content:center;
   width:44px; height:44px; border-radius:50%;
+  margin:auto auto 1.5rem;
+  flex-shrink:0;
   border:1px solid rgba(255,255,255,0.15);
   color:var(--grey-light); font-size:1rem;
   text-decoration:none; cursor:pointer;
@@ -673,7 +682,8 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   .bento-main-info h3{font-size:1.2rem}
   .shop-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:2px}
-  .hero-content{padding-bottom:6vh}
+  .hero-content{padding-bottom:0}
+  .hero-logo{max-height:35vh}
   .hero-bg{width:100%;opacity:0.3;mask-image:none;-webkit-mask-image:none}
   .next-concert-card{grid-template-columns:1fr;text-align:center;gap:1rem;padding:1.5rem 1.25rem}
   .next-concert-date{flex-direction:row;gap:0.6rem;padding:0.75rem 1.2rem;justify-content:center}
