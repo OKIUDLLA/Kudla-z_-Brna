@@ -33,6 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
   registerSW();
 });
 
+/* bfcache fix — reset hero animations on back/forward navigation */
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) {
+    document.querySelectorAll('.hero-logo, .hero-tagline, .hero-cta .btn, .hero-scroll').forEach(el => {
+      el.style.animation = 'none';
+      el.style.opacity = '1';
+      el.style.transform = el.classList.contains('hero-scroll') ? 'translateX(-50%)' : 'none';
+    });
+  }
+});
+
 // Newsletter form — AJAX submit via Netlify Forms
 function initNewsletter() {
   const form = document.querySelector('.newsletter-form');
