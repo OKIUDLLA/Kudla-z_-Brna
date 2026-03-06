@@ -174,7 +174,7 @@ section { padding:6rem 0; position:relative; contain:layout style; }
   margin-bottom:0;
 }
 .hero-cta .btn {
-  min-width:200px; justify-content:center;
+  width:210px; justify-content:center;
   opacity:0; animation:heroFadeUp 1s var(--ease-out) 1s forwards;
 }
 .hero-scroll {
