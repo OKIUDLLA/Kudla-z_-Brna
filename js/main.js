@@ -975,6 +975,103 @@ function initConcertKeyboard() {
   });
 }
 
+// BIO PAGE — dynamic rendering from bio.json
+async function loadBioPage() {
+  const bioText = document.getElementById('bio-dynamic');
+  const bioTags = document.getElementById('bio-tags');
+  if (!bioText && !bioTags) return;
+
+  const data = await loadJSON('data/bio.json');
+  if (!data) return;
+
+  if (bioText && data.sections) {
+    let html = '';
+    data.sections.forEach(s => {
+      if (s.heading) html += `<h3>${s.heading}</h3>`;
+      html += `<p>${s.text}</p>`;
+    });
+    bioText.innerHTML = html;
+  }
+
+  if (bioTags && data.tags) {
+    const TAG_ICONS = {
+      'Písničkář': 'fa-microphone-alt', 'Textař': 'fa-pen-fancy', 'Looper': 'fa-music',
+      'Rádio BEAT': 'fa-radio', 'Lidopop': 'fa-users', 'Zadáci': 'fa-users',
+      'Dětské divadlo': 'fa-theater-masks', 'Progres 2': 'fa-star', 'B Side Band': 'fa-star'
+    };
+    bioTags.innerHTML = data.tags.map(t =>
+      `<span class="tag"><i class="fas ${TAG_ICONS[t] || 'fa-tag'}"></i>&nbsp; ${esc(t)}</span>`
+    ).join('');
+  }
+}
+
+// CONTACT PAGE — dynamic rendering from site.json
+async function loadContact() {
+  const container = document.getElementById('contact-dynamic');
+  if (!container) return;
+
+  const data = await loadJSON('data/site.json');
+  if (!data || !data.contact) return;
+
+  const phone = data.contact.phone || '';
+  const email = data.contact.email || '';
+  const city = data.contact.city || '';
+  const phoneHref = phone.replace(/\s/g, '');
+
+  container.innerHTML = `
+    <div class="contact-item">
+      <div class="contact-icon"><i class="fas fa-phone"></i></div>
+      <div>
+        <h3>Telefon</h3>
+        <a href="tel:+420${phoneHref}">${esc(phone)}</a>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+      <div>
+        <h3>Email</h3>
+        <a href="mailto:${escAttr(email)}">${esc(email)}</a>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+      <div>
+        <h3>Město</h3>
+        <p>${esc(city)}</p>
+      </div>
+    </div>`;
+
+  // Social row
+  if (data.social) {
+    const s = data.social;
+    let socialHtml = '<div class="social-row">';
+    if (s.facebook) socialHtml += `<a href="${s.facebook}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>`;
+    if (s.youtube) socialHtml += `<a href="${s.youtube}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>`;
+    if (s.bandzone) socialHtml += `<a href="${s.bandzone}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Bandzone"><i class="fas fa-music"></i></a>`;
+    if (s.spotify) socialHtml += `<a href="${s.spotify}" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Spotify"><i class="fab fa-spotify"></i></a>`;
+    socialHtml += '</div>';
+    container.insertAdjacentHTML('beforeend', socialHtml);
+  }
+}
+
+// SOCIAL LINKS — dynamic update of header & footer social links from site.json
+async function loadSocialLinks() {
+  const containers = document.querySelectorAll('.header-social, .footer-social');
+  if (!containers.length) return;
+
+  const data = await loadJSON('data/site.json');
+  if (!data || !data.social) return;
+
+  const s = data.social;
+  let html = '';
+  if (s.facebook) html += `<a href="${s.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>`;
+  if (s.youtube) html += `<a href="${s.youtube}" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>`;
+  if (s.bandzone) html += `<a href="${s.bandzone}" target="_blank" rel="noopener noreferrer" aria-label="Bandzone"><i class="fas fa-music"></i></a>`;
+  if (s.spotify) html += `<a href="${s.spotify}" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><i class="fab fa-spotify"></i></a>`;
+
+  containers.forEach(c => { c.innerHTML = html; });
+}
+
 // Initialize data loading on page load
 function initDataLoading() {
   loadConcerts();
@@ -983,5 +1080,8 @@ function initDataLoading() {
   loadVideos();
   loadGallery();
   loadShop();
+  loadBioPage();
+  loadContact();
+  loadSocialLinks();
   injectBreadcrumb();
 }

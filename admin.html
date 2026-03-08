@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="css/style.css?v=2.4">
+  <link rel="stylesheet" href="css/style.css?v=2.9">
   <style>
     /* Admin-specific overrides */
     .admin-publish-bar {
@@ -74,9 +74,6 @@
 
   <header class="site-header scrolled">
     <div class="header-inner">
-      <a href="index.html" class="site-logo">
-        <img src="img/logo.svg" alt="Kudla z Brna">
-      </a>
       <div style="display:flex;align-items:center;gap:1rem;">
         <span style="color:var(--accent-bright);font-size:0.8rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">
           <i class="fas fa-lock"></i> Správa webu
@@ -287,6 +284,46 @@
             <button class="admin-btn" onclick="saveBio()"><i class="fas fa-save"></i> Uložit biografii</button>
           </div>
         </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-file-alt"></i> Sekce biografie (stránka Biografie)</h2>
+          <div class="admin-message" style="background:rgba(56,182,255,0.08);border:1px solid rgba(56,182,255,0.2);color:var(--grey-lighter);">
+            <strong><i class="fas fa-info-circle"></i> Tip:</strong> Každá sekce = jeden odstavec na stránce Biografie. Můžete použít &lt;strong&gt;tučný text&lt;/strong&gt; a &lt;a href="..."&gt;odkaz&lt;/a&gt;.
+          </div>
+          <div id="bioSectionsList"></div>
+          <div class="admin-form" style="margin-top:1rem;">
+            <label>Nadpis sekce (nepovinné)</label>
+            <input type="text" id="newSectionHeading" placeholder="Např. Diskografie">
+            <label>Text sekce</label>
+            <textarea id="newSectionText" rows="4" placeholder="Text odstavce..."></textarea>
+            <button class="admin-btn" onclick="addBioSection()"><i class="fas fa-plus"></i> Přidat sekci</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-address-card"></i> Kontaktní údaje</h2>
+          <div class="admin-form">
+            <label>Telefon</label>
+            <input type="text" id="contactPhone" placeholder="608 367 837">
+            <label>Email</label>
+            <input type="email" id="contactEmail" placeholder="m.kudlicka@seznam.cz">
+            <label>Město</label>
+            <input type="text" id="contactCity" placeholder="Brno, Česká republika">
+            <button class="admin-btn" onclick="saveContact()"><i class="fas fa-save"></i> Uložit kontakt</button>
+          </div>
+        </div>
+        <div class="admin-section">
+          <h2><i class="fas fa-share-alt"></i> Sociální sítě</h2>
+          <div class="admin-form">
+            <label><i class="fab fa-facebook-f"></i> Facebook URL</label>
+            <input type="url" id="socialFacebook" placeholder="https://facebook.com/...">
+            <label><i class="fab fa-youtube"></i> YouTube URL</label>
+            <input type="url" id="socialYoutube" placeholder="https://youtube.com/@...">
+            <label><i class="fas fa-music"></i> Bandzone URL</label>
+            <input type="url" id="socialBandzone" placeholder="https://bandzone.cz/...">
+            <label><i class="fab fa-spotify"></i> Spotify URL</label>
+            <input type="url" id="socialSpotify" placeholder="https://open.spotify.com/artist/...">
+            <button class="admin-btn" onclick="saveSocial()"><i class="fas fa-save"></i> Uložit soc. sítě</button>
+          </div>
+        </div>
       </div>
 
       <!-- TAB: EXPORT -->
@@ -371,7 +408,7 @@
   let videosData = { featured: { youtubeId: '', title: '', description: '' }, videos: [] };
   let galleryData = { photos: [] };
   let shopData = { albums: [], shippingNote: '' };
-  let bioData = { headline: '', shortBio: '', longBio: '', tags: [] };
+  let bioData = { headline: '', shortBio: '', longBio: '', tags: [], sections: [] };
   let siteData = {};
   let hasUnsavedChanges = false;
 
@@ -482,7 +519,7 @@
         fetch('data/videos.json').then(r => r.json()).catch(() => ({ featured: {youtubeId:'',title:'',description:''}, videos: [] })),
         fetch('data/gallery.json').then(r => r.json()).catch(() => ({ photos: [] })),
         fetch('data/shop.json').then(r => r.json()).catch(() => ({ albums: [], shippingNote: '' })),
-        fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[] })),
+        fetch('data/bio.json').then(r => r.json()).catch(() => ({ headline:'', shortBio:'', longBio:'', tags:[], sections:[] })),
         fetch('data/site.json').then(r => r.json()).catch(() => ({}))
       ]);
 
@@ -569,6 +606,8 @@
     renderGallery();
     renderShop();
     renderBio();
+    renderBioSections();
+    renderContact();
   }
 
   function esc(str) {
@@ -830,13 +869,111 @@
   }
 
   function saveBio() {
-    bioData = {
-      headline: document.getElementById('bioHeadline').value,
-      shortBio: document.getElementById('bioShort').value,
-      longBio: document.getElementById('bioLong').value,
-      tags: document.getElementById('bioTags').value.split(',').map(t => t.trim()).filter(Boolean)
-    };
+    bioData.headline = document.getElementById('bioHeadline').value;
+    bioData.shortBio = document.getElementById('bioShort').value;
+    bioData.longBio = document.getElementById('bioLong').value;
+    bioData.tags = document.getElementById('bioTags').value.split(',').map(t => t.trim()).filter(Boolean);
     saveLocal('bio', bioData);
+  }
+
+  // ---- BIO SECTIONS ----
+  function renderBioSections() {
+    const el = document.getElementById('bioSectionsList');
+    if (!el) return;
+    const sections = bioData.sections || [];
+    el.innerHTML = sections.length ? sections.map((s, i) => `
+      <div class="admin-item" style="display:block;padding:0.75rem;margin-bottom:0.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="flex:1;">
+            ${s.heading ? `<h4 style="margin:0 0 0.3rem;font-size:0.9rem;color:var(--accent-bright);">${esc(s.heading)}</h4>` : ''}
+            <p style="margin:0;font-size:0.85rem;color:var(--grey-lighter);line-height:1.5;">${esc(s.text).substring(0, 150)}${s.text.length > 150 ? '...' : ''}</p>
+          </div>
+          <div style="display:flex;gap:0.3rem;margin-left:0.5rem;">
+            ${i > 0 ? `<button onclick="moveBioSection(${i},-1)" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.4rem;cursor:pointer;font-size:0.7rem;border-radius:3px;" title="Nahoru"><i class="fas fa-arrow-up"></i></button>` : ''}
+            ${i < sections.length - 1 ? `<button onclick="moveBioSection(${i},1)" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.4rem;cursor:pointer;font-size:0.7rem;border-radius:3px;" title="Dolů"><i class="fas fa-arrow-down"></i></button>` : ''}
+            <button onclick="editBioSection(${i})" style="background:none;border:1px solid var(--grey-dark);color:var(--grey-light);padding:0.2rem 0.4rem;cursor:pointer;font-size:0.7rem;border-radius:3px;" title="Upravit"><i class="fas fa-pen"></i></button>
+            <button onclick="removeBioSection(${i})" style="background:none;border:1px solid var(--grey-dark);color:var(--grey);padding:0.2rem 0.4rem;cursor:pointer;font-size:0.7rem;border-radius:3px;" class="delete" title="Smazat"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      </div>`).join('') : '<p style="color:var(--grey);padding:0.5rem;">Žádné sekce biografie.</p>';
+  }
+
+  function addBioSection() {
+    const text = document.getElementById('newSectionText').value.trim();
+    if (!text) { showMessage('Zadejte text sekce.', 'error'); return; }
+    if (!bioData.sections) bioData.sections = [];
+    bioData.sections.push({
+      heading: document.getElementById('newSectionHeading').value.trim() || undefined,
+      text: text
+    });
+    // Clean undefined heading
+    const last = bioData.sections[bioData.sections.length - 1];
+    if (!last.heading) delete last.heading;
+    saveLocal('bio', bioData);
+    renderBioSections();
+    document.getElementById('newSectionHeading').value = '';
+    document.getElementById('newSectionText').value = '';
+  }
+
+  function editBioSection(index) {
+    const s = bioData.sections[index];
+    if (!s) return;
+    document.getElementById('newSectionHeading').value = s.heading || '';
+    document.getElementById('newSectionText').value = s.text || '';
+    // Remove old, will re-add on save
+    bioData.sections.splice(index, 1);
+    saveLocal('bio', bioData, true);
+    renderBioSections();
+    document.getElementById('newSectionText').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function removeBioSection(index) {
+    if (!confirm('Opravdu smazat tuto sekci?')) return;
+    bioData.sections.splice(index, 1);
+    saveLocal('bio', bioData);
+    renderBioSections();
+  }
+
+  function moveBioSection(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= bioData.sections.length) return;
+    const temp = bioData.sections[index];
+    bioData.sections[index] = bioData.sections[newIndex];
+    bioData.sections[newIndex] = temp;
+    saveLocal('bio', bioData, true);
+    renderBioSections();
+  }
+
+  // ---- CONTACT & SOCIAL ----
+  function saveContact() {
+    if (!siteData.contact) siteData.contact = {};
+    siteData.contact.phone = document.getElementById('contactPhone').value.trim();
+    siteData.contact.email = document.getElementById('contactEmail').value.trim();
+    siteData.contact.city = document.getElementById('contactCity').value.trim();
+    saveLocal('site', siteData);
+  }
+
+  function saveSocial() {
+    if (!siteData.social) siteData.social = {};
+    siteData.social.facebook = document.getElementById('socialFacebook').value.trim();
+    siteData.social.youtube = document.getElementById('socialYoutube').value.trim();
+    siteData.social.bandzone = document.getElementById('socialBandzone').value.trim();
+    siteData.social.spotify = document.getElementById('socialSpotify').value.trim();
+    saveLocal('site', siteData);
+  }
+
+  function renderContact() {
+    if (siteData.contact) {
+      document.getElementById('contactPhone').value = siteData.contact.phone || '';
+      document.getElementById('contactEmail').value = siteData.contact.email || '';
+      document.getElementById('contactCity').value = siteData.contact.city || '';
+    }
+    if (siteData.social) {
+      document.getElementById('socialFacebook').value = siteData.social.facebook || '';
+      document.getElementById('socialYoutube').value = siteData.social.youtube || '';
+      document.getElementById('socialBandzone').value = siteData.social.bandzone || '';
+      document.getElementById('socialSpotify').value = siteData.social.spotify || '';
+    }
   }
 
   // ---- RENDER OTHER SECTIONS (unchanged) ----
